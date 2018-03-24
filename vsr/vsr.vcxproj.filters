@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="public">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="private">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="public\vsr.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_define.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_instance.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_instance.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_define.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_surface.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_surface.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_physicaldevice.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_physicaldevice.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_queue.h">
+      <Filter>public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="private\vsr_instance.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_surface.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_physicaldevice.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

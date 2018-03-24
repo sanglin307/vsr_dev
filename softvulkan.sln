@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "softvulkan", "softvulkan\softvulkan.vcxproj", "{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}"
+	ProjectSection(ProjectDependencies) = postProject
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7} = {64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vsr", "vsr\vsr.vcxproj", "{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Debug|x64.ActiveCfg = Debug|x64
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Debug|x64.Build.0 = Debug|x64
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Debug|x86.ActiveCfg = Debug|Win32
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Debug|x86.Build.0 = Debug|Win32
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Release|x64.ActiveCfg = Release|x64
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Release|x64.Build.0 = Release|x64
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Release|x86.ActiveCfg = Release|Win32
+		{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}.Release|x86.Build.0 = Release|Win32
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Debug|x64.ActiveCfg = Debug|x64
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Debug|x64.Build.0 = Debug|x64
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Debug|x86.ActiveCfg = Debug|Win32
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Debug|x86.Build.0 = Debug|Win32
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Release|x64.ActiveCfg = Release|x64
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Release|x64.Build.0 = Release|x64
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Release|x86.ActiveCfg = Release|Win32
+		{64CB93A3-E1FC-42B7-BA06-4A8AAF5100C7}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
