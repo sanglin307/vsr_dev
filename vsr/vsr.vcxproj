@@ -131,12 +131,27 @@
     <ClInclude Include="private\vsr_instance.h" />
     <ClInclude Include="private\vsr_physicaldevice.h" />
     <ClInclude Include="private\vsr_surface.h" />
+    <ClInclude Include="public\vk_platform.h" />
+    <ClInclude Include="public\vsr_buffer.h" />
+    <ClInclude Include="public\vsr_commandbuffer.h" />
+    <ClInclude Include="public\vsr_debugutils.h" />
+    <ClInclude Include="public\vsr_descriptor.h" />
+    <ClInclude Include="public\vsr_device.h" />
+    <ClInclude Include="public\vsr_fence.h" />
+    <ClInclude Include="public\vsr_framebuffer.h" />
+    <ClInclude Include="public\vsr_image.h" />
     <ClInclude Include="public\vsr_physicaldevice.h" />
     <ClInclude Include="public\vsr.h" />
     <ClInclude Include="public\vsr_define.h" />
     <ClInclude Include="public\vsr_instance.h" />
+    <ClInclude Include="public\vsr_pipeline.h" />
+    <ClInclude Include="public\vsr_presentation.h" />
     <ClInclude Include="public\vsr_queue.h" />
+    <ClInclude Include="public\vsr_renderpass.h" />
+    <ClInclude Include="public\vsr_semaphore.h" />
+    <ClInclude Include="public\vsr_shadermodule.h" />
     <ClInclude Include="public\vsr_surface.h" />
+    <ClInclude Include="public\vsr_swapchain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp" />

@@ -51,13 +51,14 @@
 #ifdef ANDROID
 #include "vulkan_wrapper.h"
 #else
-#include <vulkan/vulkan.h>
+#include "../vsr/public/vsr.h"
+//#include <vulkan/vulkan.h>
 #endif
 
 #include <vulkan/vk_sdk_platform.h>
 
 #include "linmath.h"
-#include "vk_enum_string_helper.h"
+//#include "vk_enum_string_helper.h"
 
 #include "gettime.h"
 #include "inttypes.h"
@@ -498,7 +499,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debug_messenger_callback(VkDebugUtilsMessageSever
         char tmp_message[500];
         sprintf(tmp_message, "\n\tObjects - %d\n", pCallbackData->objectCount);
         strcat(message, tmp_message);
-        for (uint32_t object = 0; object < pCallbackData->objectCount; ++object) {
+       /* for (uint32_t object = 0; object < pCallbackData->objectCount; ++object) {
             if (NULL != pCallbackData->pObjects[object].pObjectName && strlen(pCallbackData->pObjects[object].pObjectName) > 0) {
                 sprintf(tmp_message, "\t\tObject[%d] - %s, Handle %p, Name \"%s\"\n", object,
                         string_VkObjectType(pCallbackData->pObjects[object].objectType),
@@ -509,7 +510,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debug_messenger_callback(VkDebugUtilsMessageSever
                         (void *)(pCallbackData->pObjects[object].objectHandle));
             }
             strcat(message, tmp_message);
-        }
+        }*/
     }
     if (pCallbackData->cmdBufLabelCount > 0) {
         char tmp_message[500];

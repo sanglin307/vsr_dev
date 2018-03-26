@@ -24,33 +24,41 @@ typedef struct VkSurfaceFormatKHR {
 	VkColorSpaceKHR    colorSpace;
 } VkSurfaceFormatKHR;
 
-void vkDestroySurfaceKHR(
+#ifndef VK_NO_PROTOTYPES
+VKAPI_ATTR void VKAPI_CALL vkDestroySurfaceKHR(
 	VkInstance                                  instance,
 	VkSurfaceKHR                                surface,
 	const VkAllocationCallbacks*                pAllocator);
 
-VkResult vkGetPhysicalDeviceSurfaceSupportKHR(
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceSupportKHR(
 	VkPhysicalDevice                            physicalDevice,
 	uint32_t                                    queueFamilyIndex,
 	VkSurfaceKHR                                surface,
 	VkBool32*                                   pSupported);
 
-VkResult  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
 	VkPhysicalDevice                            physicalDevice,
 	VkSurfaceKHR                                surface,
 	VkSurfaceCapabilitiesKHR*                   pSurfaceCapabilities);
 
-VkResult vkGetPhysicalDeviceSurfaceFormatsKHR(
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(
 	VkPhysicalDevice                            physicalDevice,
 	VkSurfaceKHR                                surface,
 	uint32_t*                                   pSurfaceFormatCount,
 	VkSurfaceFormatKHR*                         pSurfaceFormats);
 
-VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(
 	VkPhysicalDevice                            physicalDevice,
 	VkSurfaceKHR                                surface,
 	uint32_t*                                   pPresentModeCount,
 	VkPresentModeKHR*                           pPresentModes);
+#endif
+
+typedef void(VKAPI_PTR *PFN_vkDestroySurfaceKHR)(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks* pAllocator);
+typedef VkResult(VKAPI_PTR *PFN_vkGetPhysicalDeviceSurfaceSupportKHR)(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, VkSurfaceKHR surface, VkBool32* pSupported);
+typedef VkResult(VKAPI_PTR *PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR)(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR* pSurfaceCapabilities);
+typedef VkResult(VKAPI_PTR *PFN_vkGetPhysicalDeviceSurfaceFormatsKHR)(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pSurfaceFormatCount, VkSurfaceFormatKHR* pSurfaceFormats);
+typedef VkResult(VKAPI_PTR *PFN_vkGetPhysicalDeviceSurfacePresentModesKHR)(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes);
 
 //windows platform
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -70,16 +78,23 @@ typedef struct VkWin32SurfaceCreateInfoKHR {
 	HWND                            hwnd;
 } VkWin32SurfaceCreateInfoKHR;
 
-VkResult vkCreateWin32SurfaceKHR(
+typedef VkResult(VKAPI_PTR *PFN_vkCreateWin32SurfaceKHR)(VkInstance instance, const VkWin32SurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface);
+typedef VkBool32(VKAPI_PTR *PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR)(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex);
+
+#ifndef VK_NO_PROTOTYPES
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateWin32SurfaceKHR(
 	VkInstance                                  instance,
 	const VkWin32SurfaceCreateInfoKHR*          pCreateInfo,
 	const VkAllocationCallbacks*                pAllocator,
 	VkSurfaceKHR*                               pSurface);
 
-
-VkBool32 vkGetPhysicalDeviceWin32PresentationSupportKHR(
+VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceWin32PresentationSupportKHR(
 	VkPhysicalDevice                            physicalDevice,
 	uint32_t                                    queueFamilyIndex);
+#endif
+
+
+
 
 #endif /* VK_USE_PLATFORM_WIN32_KHR */
 

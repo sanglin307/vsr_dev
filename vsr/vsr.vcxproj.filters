@@ -44,6 +44,51 @@
     <ClInclude Include="public\vsr_queue.h">
       <Filter>public</Filter>
     </ClInclude>
+    <ClInclude Include="public\vsr_device.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_image.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_commandbuffer.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_buffer.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_framebuffer.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_descriptor.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_semaphore.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_swapchain.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vk_platform.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_fence.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_pipeline.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_renderpass.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_shadermodule.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_debugutils.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vsr_presentation.h">
+      <Filter>public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp">
