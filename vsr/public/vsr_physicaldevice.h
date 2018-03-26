@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vsr_define.h"
+#include "vsr_queue.h"
 
 VK_DEFINE_HANDLE(VkPhysicalDevice)
 
