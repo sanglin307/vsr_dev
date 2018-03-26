@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../public/vsr_instance.h"
+#include "../public/vulkan.h"
 
 
 struct VkInstance_T {

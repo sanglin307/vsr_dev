@@ -1,12 +1,4 @@
 #include "vsr_define.h"
-#include "vsr_instance.h"
-
-
-#ifdef _WIN32
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-
-#include "../public/vsr_surface.h"
 #include "vsr_surface.h"
 
 void vkDestroySurfaceKHR(

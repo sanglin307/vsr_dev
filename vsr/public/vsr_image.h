@@ -1,7 +1,0 @@
-#pragma once
-
-#include "vsr_define.h"
-
-VK_DEFINE_NON_DISPATCHABLE_HANDLE(VkSampler)
-VK_DEFINE_NON_DISPATCHABLE_HANDLE(VkImage)
-VK_DEFINE_NON_DISPATCHABLE_HANDLE(VkImageView)

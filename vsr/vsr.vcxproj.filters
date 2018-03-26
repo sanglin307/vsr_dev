@@ -14,79 +14,31 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="public\vsr.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_define.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_instance.h">
-      <Filter>public</Filter>
-    </ClInclude>
     <ClInclude Include="private\vsr_instance.h">
       <Filter>private</Filter>
     </ClInclude>
     <ClInclude Include="private\vsr_define.h">
       <Filter>private</Filter>
     </ClInclude>
-    <ClInclude Include="public\vsr_surface.h">
-      <Filter>public</Filter>
-    </ClInclude>
     <ClInclude Include="private\vsr_surface.h">
       <Filter>private</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_physicaldevice.h">
-      <Filter>public</Filter>
     </ClInclude>
     <ClInclude Include="private\vsr_physicaldevice.h">
       <Filter>private</Filter>
     </ClInclude>
-    <ClInclude Include="public\vsr_queue.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_device.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_image.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_commandbuffer.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_buffer.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_framebuffer.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_descriptor.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_semaphore.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_swapchain.h">
+    <ClInclude Include="public\vulkan.h">
       <Filter>public</Filter>
     </ClInclude>
     <ClInclude Include="public\vk_platform.h">
       <Filter>public</Filter>
     </ClInclude>
-    <ClInclude Include="public\vsr_fence.h">
+    <ClInclude Include="public\vk_sdk_platform.h">
       <Filter>public</Filter>
     </ClInclude>
-    <ClInclude Include="public\vsr_pipeline.h">
+    <ClInclude Include="public\vulkan_core.h">
       <Filter>public</Filter>
     </ClInclude>
-    <ClInclude Include="public\vsr_renderpass.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_shadermodule.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_debugutils.h">
-      <Filter>public</Filter>
-    </ClInclude>
-    <ClInclude Include="public\vsr_presentation.h">
+    <ClInclude Include="public\vulkan_win32.h">
       <Filter>public</Filter>
     </ClInclude>
   </ItemGroup>

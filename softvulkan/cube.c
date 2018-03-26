@@ -51,11 +51,11 @@
 #ifdef ANDROID
 #include "vulkan_wrapper.h"
 #else
-#include "../vsr/public/vsr.h"
+#include "../vsr/public/vulkan.h"
 //#include <vulkan/vulkan.h>
 #endif
 
-#include <vulkan/vk_sdk_platform.h>
+#include "../vsr/public/vk_sdk_platform.h"
 
 #include "linmath.h"
 //#include "vk_enum_string_helper.h"

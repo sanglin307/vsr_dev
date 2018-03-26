@@ -20,7 +20,7 @@
 
 #include <time.h>
 #include <assert.h>
-#include <vulkan/vk_platform.h>
+#include "../vsr/public/vk_platform.h"
 
 #if defined(_WIN32)
 

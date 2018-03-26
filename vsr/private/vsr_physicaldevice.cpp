@@ -1,10 +1,7 @@
-#include "vsr_instance.h"
+#include "vsr_define.h"
 #include "vsr_physicaldevice.h"
-
-#include "../public/vsr_queue.h"
-#include "../public/vsr_physicaldevice.h"
-
-extern VkPhysicalDevice_T GPhysicalDevice;
+ 
+ VkPhysicalDevice_T GPhysicalDevice;
 
 VkResult vkEnumeratePhysicalDevices(
 	VkInstance                                  instance,
