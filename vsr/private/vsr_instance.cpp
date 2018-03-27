@@ -1,7 +1,15 @@
 #include "vsr_define.h"
 #include "vsr_instance.h"
 
-VkResult vkCreateInstance(
+VkInstance_T::VkInstance_T()
+{
+	_dispatchTable["vkCreateInstance"] = (PFN_vkVoidFunction)vkCreateInstance;
+	_dispatchTable["vkDestroyInstance"] = (PFN_vkVoidFunction)vkDestroyInstance;
+
+	_dispatchTable["vkEnumeratePhysicalDevices"] = (PFN_vkVoidFunction)vkEnumeratePhysicalDevices;
+}
+
+VKAPI_ATTR VkResult VKAPI_PTR vkCreateInstance(
 	const VkInstanceCreateInfo*                 pCreateInfo,
 	const VkAllocationCallbacks*                pAllocator,
 	VkInstance*                                 pInstance)
@@ -27,7 +35,7 @@ VkResult vkCreateInstance(
 	return VK_SUCCESS;
 }
 
-void  vkDestroyInstance(
+VKAPI_ATTR void VKAPI_PTR vkDestroyInstance(
 	VkInstance                                  instance,
 	const VkAllocationCallbacks*                pAllocator)
 {
@@ -39,4 +47,42 @@ void  vkDestroyInstance(
 	{
 		std::free(instance);
 	}
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceVersion(
+	uint32_t*                                   pApiVersion)
+{
+	*pApiVersion = 
+}
+
+VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(
+	VkInstance                                  instance,
+	const char*                                 pName)
+{
+
+	if(strcmp(pName,"vkEnumerateInstanceVersion") == 0)
+
+
+		fp
+
+		NULL
+
+		vkEnumerateInstanceExtensionProperties
+
+		fp
+
+		NULL
+
+		vkEnumerateInstanceLayerProperties
+
+		fp
+
+		NULL
+
+		vkCreateInstance
+	auto iter = instance->_dispatchTable.find(pName);
+	if (iter == instance->_dispatchTable.end())
+		return nullptr;
+	else
+		return iter->second;
 }

@@ -1,8 +1,7 @@
 #pragma once
 
 
-typedef struct VkPhysicalDevice_T {
-	
-}VkPhysicalDevice_T;
-
-extern VkPhysicalDevice_T GPhysicalDevice;
+struct VkPhysicalDevice_T {
+	static struct VkPhysicalDevice_T* _instance;
+	static VkPhysicalDevice_T* Get();
+};
