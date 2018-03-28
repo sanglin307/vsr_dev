@@ -41,6 +41,9 @@
     <ClInclude Include="public\vulkan_win32.h">
       <Filter>public</Filter>
     </ClInclude>
+    <ClInclude Include="private\vsr_device.h">
+      <Filter>private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp">
@@ -50,6 +53,9 @@
       <Filter>private</Filter>
     </ClCompile>
     <ClCompile Include="private\vsr_physicaldevice.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_device.cpp">
       <Filter>private</Filter>
     </ClCompile>
   </ItemGroup>

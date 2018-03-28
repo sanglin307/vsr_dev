@@ -1,12 +1,23 @@
 #include "vsr_define.h"
 #include "vsr_instance.h"
 
-VkInstance_T::VkInstance_T()
+void VkInstance_T::init()
 {
-	_dispatchTable["vkCreateInstance"] = (PFN_vkVoidFunction)vkCreateInstance;
 	_dispatchTable["vkDestroyInstance"] = (PFN_vkVoidFunction)vkDestroyInstance;
+	_dispatchTable["vkGetDeviceProcAddr"] = (PFN_vkVoidFunction)vkGetDeviceProcAddr;
+	_dispatchTable["vkCreateDevice"] = (PFN_vkVoidFunction)vkCreateDevice;
 
 	_dispatchTable["vkEnumeratePhysicalDevices"] = (PFN_vkVoidFunction)vkEnumeratePhysicalDevices;
+	_dispatchTable["vkGetPhysicalDeviceQueueFamilyProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceQueueFamilyProperties;
+	_dispatchTable["vkGetPhysicalDeviceFeatures"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceFeatures;
+	_dispatchTable["vkGetPhysicalDeviceFormatProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceFormatProperties;
+	_dispatchTable["vkGetPhysicalDeviceProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceProperties;
+	_dispatchTable["vkGetPhysicalDeviceMemoryProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceMemoryProperties;
+}
+
+void VkInstance_T::exit()
+{
+	_dispatchTable.clear();
 }
 
 VKAPI_ATTR VkResult VKAPI_PTR vkCreateInstance(
@@ -31,6 +42,7 @@ VKAPI_ATTR VkResult VKAPI_PTR vkCreateInstance(
 	}
 
 	*pInstance = (VkInstance_T *)pMem;
+	(*pInstance)->init();
 
 	return VK_SUCCESS;
 }
@@ -39,6 +51,7 @@ VKAPI_ATTR void VKAPI_PTR vkDestroyInstance(
 	VkInstance                                  instance,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	instance->exit();
 	if (pAllocator != nullptr)
 	{
 		pAllocator->pfnFree(pAllocator->pUserData, instance);
@@ -52,34 +65,59 @@ VKAPI_ATTR void VKAPI_PTR vkDestroyInstance(
 VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceVersion(
 	uint32_t*                                   pApiVersion)
 {
-	*pApiVersion = 
+	*pApiVersion = VK_API_VERSION_1_0;
+	return VK_SUCCESS;
 }
+
+VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceExtensionProperties(
+	const char*                                 pLayerName,
+	uint32_t*                                   pPropertyCount,
+	VkExtensionProperties*                      pProperties)
+{
+	//surface extension must support!
+	//hardcode!
+	*pPropertyCount = 2;
+	if (pProperties == nullptr)
+		return VK_SUCCESS;
+
+	pProperties[0].specVersion = VK_VERSION_1_1;
+	std::strcpy(pProperties[0].extensionName , VK_KHR_SURFACE_EXTENSION_NAME);
+
+#if VK_USE_PLATFORM_WIN32_KHR
+	pProperties[1].specVersion = VK_VERSION_1_1;
+	std::strcpy(pProperties[1].extensionName , VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#endif
+
+	return VK_SUCCESS;
+
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceLayerProperties(
+	uint32_t*                                   pPropertyCount,
+	VkLayerProperties*                          pProperties)
+{
+	*pPropertyCount = 0;
+	return VK_SUCCESS;
+}
+
 
 VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(
 	VkInstance                                  instance,
 	const char*                                 pName)
 {
 
-	if(strcmp(pName,"vkEnumerateInstanceVersion") == 0)
+	if (std::strcmp(pName, "vkEnumerateInstanceVersion") == 0)
+		return (PFN_vkVoidFunction)vkEnumerateInstanceVersion;
+ 
+	if (std::strcmp(pName, "vkEnumerateInstanceLayerProperties") == 0)
+		return (PFN_vkVoidFunction)vkEnumerateInstanceLayerProperties;
 
+	if (std::strcmp(pName, "vkEnumerateInstanceExtensionProperties") == 0)
+		return (PFN_vkVoidFunction)vkEnumerateInstanceExtensionProperties;
 
-		fp
+	if (std::strcmp(pName, "vkCreateInstance") == 0)
+		return (PFN_vkVoidFunction)vkCreateInstance;
 
-		NULL
-
-		vkEnumerateInstanceExtensionProperties
-
-		fp
-
-		NULL
-
-		vkEnumerateInstanceLayerProperties
-
-		fp
-
-		NULL
-
-		vkCreateInstance
 	auto iter = instance->_dispatchTable.find(pName);
 	if (iter == instance->_dispatchTable.end())
 		return nullptr;

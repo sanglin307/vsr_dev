@@ -33,3 +33,32 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties(
 {
 
 }
+
+VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures(
+	VkPhysicalDevice                            physicalDevice,
+	VkPhysicalDeviceFeatures*                   pFeatures)
+{
+
+}
+
+VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties(
+	VkPhysicalDevice                            physicalDevice,
+	VkFormat                                    format,
+	VkFormatProperties*                         pFormatProperties)
+{
+
+}
+
+VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties(
+	VkPhysicalDevice                            physicalDevice,
+	VkPhysicalDeviceProperties*                 pProperties)
+{
+
+}
+
+VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMemoryProperties(
+	VkPhysicalDevice                            physicalDevice,
+	VkPhysicalDeviceMemoryProperties*           pMemoryProperties)
+{
+
+}

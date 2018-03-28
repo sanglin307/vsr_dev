@@ -87,7 +87,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;VK_USE_PLATFORM_WIN32_KHR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;VK_USE_PLATFORM_WIN32_KHR;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\vsr_define.h" />
+    <ClInclude Include="private\vsr_device.h" />
     <ClInclude Include="private\vsr_instance.h" />
     <ClInclude Include="private\vsr_physicaldevice.h" />
     <ClInclude Include="private\vsr_surface.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="public\vulkan_win32.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="private\vsr_device.cpp" />
     <ClCompile Include="private\vsr_instance.cpp" />
     <ClCompile Include="private\vsr_physicaldevice.cpp" />
     <ClCompile Include="private\vsr_surface.cpp" />
