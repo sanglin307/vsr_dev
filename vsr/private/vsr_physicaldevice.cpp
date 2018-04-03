@@ -1,7 +1,20 @@
-#include "vsr_define.h"
+#include "vsr_common.h"
+#include "vsr_queue.h"
 #include "vsr_physicaldevice.h"
 
 VkPhysicalDevice_T* VkPhysicalDevice_T::_instance = nullptr;
+
+VkPhysicalDevice_T::VkPhysicalDevice_T()
+{
+	vQueueFamily qf;
+	qf._property.queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
+	qf._property.queueCount = 16;
+	qf._property.minImageTransferGranularity = { 1,1,1 };
+	qf._property.timestampValidBits = 64;
+	qf._supportSurface = 1,
+	_vecQueueFamily.push_back(qf);
+	
+}
 
 VkPhysicalDevice_T* VkPhysicalDevice_T::Get()
 {
@@ -13,19 +26,30 @@ VkPhysicalDevice_T* VkPhysicalDevice_T::Get()
 	return _instance;
 }
 
+VkResult VkPhysicalDevice_T::GetPhysicalDeviceSurfaceSupportKHR(uint32_t queueFamilyIndex, VkSurfaceKHR  surface, VkBool32* pSupported)
+{
+	if (queueFamilyIndex < 0 || queueFamilyIndex >= _vecQueueFamily.size())
+		return VK_ERROR_SURFACE_LOST_KHR;
+
+	*pSupported = _vecQueueFamily[queueFamilyIndex]._supportSurface;
+	return VK_SUCCESS;
+
+}
+
 void VkPhysicalDevice_T::GetPhysicalDeviceQueueFamilyProperties(
 	uint32_t*                                   pQueueFamilyPropertyCount,
 	VkQueueFamilyProperties*                    pQueueFamilyProperties)
 {
 	// use all in one first!
-	*pQueueFamilyPropertyCount = 1;
+	*pQueueFamilyPropertyCount = (uint32_t)_vecQueueFamily.size();
 	if (pQueueFamilyProperties == nullptr)
 		return;
 
-	pQueueFamilyProperties[0].queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
-	pQueueFamilyProperties[0].queueCount = 16;
-	pQueueFamilyProperties[0].minImageTransferGranularity = { 1,1,1 };
-	pQueueFamilyProperties[0].timestampValidBits = 64;
+	for (size_t i = 0; i < _vecQueueFamily.size(); i++)
+	{
+		pQueueFamilyProperties[i] = _vecQueueFamily[i]._property;
+	}
+	
 }
 
 void VkPhysicalDevice_T::GetPhysicalDeviceFeatures(
@@ -121,4 +145,13 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMemoryProperties(
 	VkPhysicalDeviceMemoryProperties*           pMemoryProperties)
 {
 	return physicalDevice->GetPhysicalDeviceMemoryProperties(pMemoryProperties);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceSupportKHR(
+	VkPhysicalDevice                            physicalDevice,
+	uint32_t                                    queueFamilyIndex,
+	VkSurfaceKHR                                surface,
+	VkBool32*                                   pSupported)
+{
+	return physicalDevice->GetPhysicalDeviceSurfaceSupportKHR(queueFamilyIndex, surface, pSupported);
 }

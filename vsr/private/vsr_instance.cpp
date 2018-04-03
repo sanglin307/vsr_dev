@@ -1,4 +1,4 @@
-#include "vsr_define.h"
+#include "vsr_common.h"
 #include "vsr_instance.h"
 
 void VkInstance_T::init()
@@ -13,6 +13,8 @@ void VkInstance_T::init()
 	_dispatchTable["vkGetPhysicalDeviceFormatProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceFormatProperties;
 	_dispatchTable["vkGetPhysicalDeviceProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceProperties;
 	_dispatchTable["vkGetPhysicalDeviceMemoryProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceMemoryProperties;
+
+	_dispatchTable["vkGetPhysicalDeviceSurfaceSupportKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceSupportKHR;
 }
 
 void VkInstance_T::exit()

@@ -127,10 +127,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="private\vsr_define.h" />
+    <ClInclude Include="private\vsr_common.h" />
     <ClInclude Include="private\vsr_device.h" />
     <ClInclude Include="private\vsr_instance.h" />
     <ClInclude Include="private\vsr_physicaldevice.h" />
+    <ClInclude Include="private\vsr_queue.h" />
     <ClInclude Include="private\vsr_surface.h" />
     <ClInclude Include="public\vk_platform.h" />
     <ClInclude Include="public\vk_sdk_platform.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="private\vsr_device.cpp" />
     <ClCompile Include="private\vsr_instance.cpp" />
     <ClCompile Include="private\vsr_physicaldevice.cpp" />
+    <ClCompile Include="private\vsr_queue.cpp" />
     <ClCompile Include="private\vsr_surface.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

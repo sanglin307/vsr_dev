@@ -17,9 +17,6 @@
     <ClInclude Include="private\vsr_instance.h">
       <Filter>private</Filter>
     </ClInclude>
-    <ClInclude Include="private\vsr_define.h">
-      <Filter>private</Filter>
-    </ClInclude>
     <ClInclude Include="private\vsr_surface.h">
       <Filter>private</Filter>
     </ClInclude>
@@ -44,6 +41,12 @@
     <ClInclude Include="private\vsr_device.h">
       <Filter>private</Filter>
     </ClInclude>
+    <ClInclude Include="private\vsr_queue.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_common.h">
+      <Filter>private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp">
@@ -56,6 +59,9 @@
       <Filter>private</Filter>
     </ClCompile>
     <ClCompile Include="private\vsr_device.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_queue.cpp">
       <Filter>private</Filter>
     </ClCompile>
   </ItemGroup>

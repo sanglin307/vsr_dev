@@ -1,4 +1,4 @@
-#include "vsr_define.h"
+#include "vsr_common.h"
 #include "vsr_surface.h"
 
 void vkDestroySurfaceKHR(
@@ -16,15 +16,6 @@ void vkDestroySurfaceKHR(
 	}
 }
 
-
-VkResult vkGetPhysicalDeviceSurfaceSupportKHR(
-	VkPhysicalDevice                            physicalDevice,
-	uint32_t                                    queueFamilyIndex,
-	VkSurfaceKHR                                surface,
-	VkBool32*                                   pSupported)
-{
-	return VK_SUCCESS;
-}
 
 VkResult  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
 	VkPhysicalDevice                            physicalDevice,

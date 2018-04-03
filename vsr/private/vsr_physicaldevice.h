@@ -1,10 +1,12 @@
 #pragma once
 
+#include <vector>
 
 struct VkPhysicalDevice_T {
 	static struct VkPhysicalDevice_T* _instance;
 	static VkPhysicalDevice_T* Get();
 
+	std::vector<vQueueFamily> _vecQueueFamily;
 	VkPhysicalDeviceProperties Properties = {
 		VK_API_VERSION_1_0,            //apiVersion;
 		VK_MAKE_VERSION(0,1,0),        //driverVersion;
@@ -786,5 +788,9 @@ struct VkPhysicalDevice_T {
 	void GetPhysicalDeviceFormatProperties(VkFormat format, VkFormatProperties* pFormatProperties);
 	void GetPhysicalDeviceProperties(VkPhysicalDeviceProperties* pProperties);
 	void GetPhysicalDeviceMemoryProperties(VkPhysicalDeviceMemoryProperties* pMemoryProperties);
- 
+
+	VkResult GetPhysicalDeviceSurfaceSupportKHR(uint32_t queueFamilyIndex, VkSurfaceKHR  surface, VkBool32* pSupported);
+
+	private:
+		VkPhysicalDevice_T();
 };
