@@ -1,7 +1,5 @@
 #pragma once
-
-#include <vector>
-#include <map>
+ 
 
 struct VkDevice_T {
 	VkResult init(VkPhysicalDevice physicalDevice,const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator);

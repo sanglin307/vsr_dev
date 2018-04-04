@@ -11,6 +11,13 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 	_dispatchTable["vkDestroyDevice"] = (PFN_vkVoidFunction)vkDestroyDevice;
 	_dispatchTable["vkEnumerateDeviceExtensionProperties"] = (PFN_vkVoidFunction)vkEnumerateDeviceExtensionProperties;
 	_dispatchTable["vkEnumerateDeviceLayerProperties"] = (PFN_vkVoidFunction)vkEnumerateDeviceLayerProperties;
+	_dispatchTable["vkGetDeviceQueue"] = (PFN_vkVoidFunction)vkGetDeviceQueue;
+
+	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;
+	_dispatchTable["vkDestroySwapchainKHR"] = (PFN_vkVoidFunction)vkDestroySwapchainKHR;
+	_dispatchTable["vkGetSwapchainImagesKHR"] = (PFN_vkVoidFunction)vkGetSwapchainImagesKHR;
+	_dispatchTable["vkAcquireNextImageKHR"] = (PFN_vkVoidFunction)vkAcquireNextImageKHR;
+	_dispatchTable["vkQueuePresentKHR"] = (PFN_vkVoidFunction)vkQueuePresentKHR;
 
 	for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
@@ -34,7 +41,18 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 		}
 	}
 
-	std::sort(_vecQueues.begin(), _vecQueues.end(), [](VkQueue_T* q1, VkQueue_T*q2) { return q1->_priority > q2->_priority; });
+	std::sort(_vecQueues.begin(), _vecQueues.end(), [](VkQueue_T* q1, VkQueue_T*q2) 
+	{
+		if (q1->_queueFamilyIndex < q2->_queueFamilyIndex)
+			return true;
+		else if (q1->_queueFamilyIndex == q2->_queueFamilyIndex)
+		{
+			return q1->_priority > q2->_priority;
+		}
+		else
+			return false;
+	});
+
 	return VK_SUCCESS;
 
 }
@@ -143,4 +161,30 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(
 		return nullptr;
 	else
 		return iter->second;
+}
+
+VKAPI_ATTR void VKAPI_CALL vkGetDeviceQueue(
+	VkDevice                                    device,
+	uint32_t                                    queueFamilyIndex,
+	uint32_t                                    queueIndex,
+	VkQueue*                                    pQueue)
+{
+	int index = -1;
+	for (size_t i = 0; i < device->_vecQueues.size(); i++)
+	{
+		if (device->_vecQueues[i]->_queueFamilyIndex == queueFamilyIndex)
+		{
+			if (index == -1)
+				index = 0;
+			else
+				index++;
+
+			if (index == queueIndex)
+			{
+				*pQueue = device->_vecQueues[i];
+				break;
+			}
+		}
+
+	}
 }

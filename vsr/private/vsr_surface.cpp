@@ -1,6 +1,31 @@
 #include "vsr_common.h"
 #include "vsr_surface.h"
 
+VkSurfaceKHR_T::VkSurfaceKHR_T()
+{
+	VkSurfaceFormatKHR sf0 = { VK_FORMAT_B8G8R8A8_UNORM, VK_COLORSPACE_SRGB_NONLINEAR_KHR };
+	_format.push_back(sf0);
+	//VkSurfaceFormatKHR sf1 = { VK_FORMAT_B8G8R8A8_SRGB, VK_COLORSPACE_SRGB_NONLINEAR_KHR };
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(
+	VkPhysicalDevice                            physicalDevice,
+	VkSurfaceKHR                                surface,
+	uint32_t*                                   pSurfaceFormatCount,
+	VkSurfaceFormatKHR*                         pSurfaceFormats)
+{
+	*pSurfaceFormatCount = (uint32_t)surface->_format.size();
+	if (pSurfaceFormats == nullptr)
+		return VK_SUCCESS;
+
+	for (size_t i = 0; i < surface->_format.size(); i++)
+	{
+		pSurfaceFormats[i] = surface->_format[i];
+	}
+
+	return VK_SUCCESS;
+}
+
 void vkDestroySurfaceKHR(
 	VkInstance                                  instance,
 	VkSurfaceKHR                                surface,
@@ -25,14 +50,7 @@ VkResult  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
 	return VK_SUCCESS;
 }
 
-VkResult vkGetPhysicalDeviceSurfaceFormatsKHR(
-	VkPhysicalDevice                            physicalDevice,
-	VkSurfaceKHR                                surface,
-	uint32_t*                                   pSurfaceFormatCount,
-	VkSurfaceFormatKHR*                         pSurfaceFormats)
-{
-	return VK_SUCCESS;
-}
+
 
 VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
 	VkPhysicalDevice                            physicalDevice,

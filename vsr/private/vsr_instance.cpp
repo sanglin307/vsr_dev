@@ -15,6 +15,7 @@ void VkInstance_T::init()
 	_dispatchTable["vkGetPhysicalDeviceMemoryProperties"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceMemoryProperties;
 
 	_dispatchTable["vkGetPhysicalDeviceSurfaceSupportKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceSupportKHR;
+	_dispatchTable["vkGetPhysicalDeviceSurfaceFormatsKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceFormatsKHR;
 }
 
 void VkInstance_T::exit()

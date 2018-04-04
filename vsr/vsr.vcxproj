@@ -133,6 +133,7 @@
     <ClInclude Include="private\vsr_physicaldevice.h" />
     <ClInclude Include="private\vsr_queue.h" />
     <ClInclude Include="private\vsr_surface.h" />
+    <ClInclude Include="private\vsr_swapchain.h" />
     <ClInclude Include="public\vk_platform.h" />
     <ClInclude Include="public\vk_sdk_platform.h" />
     <ClInclude Include="public\vulkan.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="private\vsr_physicaldevice.cpp" />
     <ClCompile Include="private\vsr_queue.cpp" />
     <ClCompile Include="private\vsr_surface.cpp" />
+    <ClCompile Include="private\vsr_swapchain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 #include "vsr_common.h"
 #include "vsr_queue.h"
+#include "vsr_surface.h"
 #include "vsr_physicaldevice.h"
+
 
 VkPhysicalDevice_T* VkPhysicalDevice_T::_instance = nullptr;
 
@@ -13,7 +15,7 @@ VkPhysicalDevice_T::VkPhysicalDevice_T()
 	qf._property.timestampValidBits = 64;
 	qf._supportSurface = 1,
 	_vecQueueFamily.push_back(qf);
-	
+ 
 }
 
 VkPhysicalDevice_T* VkPhysicalDevice_T::Get()
@@ -155,3 +157,4 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceSupportKHR(
 {
 	return physicalDevice->GetPhysicalDeviceSurfaceSupportKHR(queueFamilyIndex, surface, pSupported);
 }
+
