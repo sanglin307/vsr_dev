@@ -59,6 +59,15 @@ VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
 	uint32_t*                                   pPresentModeCount,
 	VkPresentModeKHR*                           pPresentModes)
 {
+	*pPresentModeCount = sizeof(surface->_presentModes) / sizeof(VkPresentModeKHR);
+	if (pPresentModes == nullptr)
+		return VK_SUCCESS;
+
+	for (size_t i = 0; i < sizeof(surface->_presentModes) / sizeof(VkPresentModeKHR); i++)
+	{
+		pPresentModes[i] = surface->_presentModes[i];
+	}
+
 	return VK_SUCCESS;
 }
 
@@ -69,7 +78,7 @@ WINSurface_T::WINSurface_T(HINSTANCE hinstance, HWND hwnd)
 {
 	RECT rect;
 	GetWindowRect(hwnd, &rect);
-	_capability.currentExtent = { rect.right - rect.left, rect.bottom - rect.top };
+	_capability.currentExtent = { uint32_t(rect.right - rect.left), uint32_t(rect.bottom - rect.top) };
 }
 
 VkResult vkCreateWin32SurfaceKHR(

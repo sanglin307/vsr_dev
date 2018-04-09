@@ -6,7 +6,7 @@ struct VkSurfaceKHR_T {
 	VkSurfaceCapabilitiesKHR _capability = {
 		2,                  //minImageCount;
 	    8,                  //maxImageCount;
-		{ 0xFFFFFFFF,0xFFFFFFFF},  //currentExtent;
+		{ 1024,768},  //currentExtent;
 		{ 1,1 },                    //minImageExtent;
 		{ 0xFFFFFFFF,0xFFFFFFFF},  //maxImageExtent;
 	    1,                         //maxImageArrayLayers;
@@ -15,6 +15,10 @@ struct VkSurfaceKHR_T {
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,        //supportedCompositeAlpha;
 		VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT|
 		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT,   //supportedUsageFlags;
+	};
+	VkPresentModeKHR _presentModes[2] = {
+		VK_PRESENT_MODE_MAILBOX_KHR,
+		VK_PRESENT_MODE_FIFO_KHR,
 	};
 };
 
