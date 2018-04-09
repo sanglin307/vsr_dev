@@ -8,7 +8,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(
 	const VkAllocationCallbacks*                pAllocator,
 	VkSwapchainKHR*                             pSwapchain)
 {
-
+	return VK_SUCCESS;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(
@@ -25,7 +25,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(
 	uint32_t*                                   pSwapchainImageCount,
 	VkImage*                                    pSwapchainImages)
 {
-
+	return VK_SUCCESS;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(
@@ -36,7 +36,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(
 	VkFence                                     fence,
 	uint32_t*                                   pImageIndex)
 {
-
+	return VK_SUCCESS;
 }
 
 
@@ -44,5 +44,5 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(
 	VkQueue                                     queue,
 	const VkPresentInfoKHR*                     pPresentInfo)
 {
-
+	return VK_SUCCESS;
 }

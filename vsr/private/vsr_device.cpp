@@ -83,14 +83,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(
 	const VkAllocationCallbacks*                pAllocator,
 	VkDevice*                                   pDevice)
 {
-	void *pMem = nullptr;
+	VkDevice_T *pMem = nullptr;
 	if (pAllocator != nullptr)
 	{
-		pMem = pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkDevice_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
+		pMem = (VkDevice_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkDevice_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
 	}
 	else
 	{
-		pMem = std::malloc(sizeof(VkDevice_T));
+		pMem = (VkDevice_T*)std::malloc(sizeof(VkDevice_T));
 	}
 
 	if (pMem == nullptr)
@@ -98,13 +98,16 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	*pDevice = (VkDevice_T *)pMem;
-	VkResult res = (*pDevice)->init(physicalDevice,pCreateInfo,pAllocator);
+	pMem = new(pMem) VkDevice_T;
+
+	VkResult res = pMem->init(physicalDevice,pCreateInfo,pAllocator);
 	if (res != VK_SUCCESS)
 	{
-		vkDestroyDevice(*pDevice, pAllocator);
+		vkDestroyDevice(pMem, pAllocator);
 		return res;
 	}
+
+	*pDevice = pMem;
 
 	return VK_SUCCESS;
 }

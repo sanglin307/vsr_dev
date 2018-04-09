@@ -1,5 +1,7 @@
 #pragma once
+#include <cassert>
 #include <cstdlib>
+#include <atomic>
 #include <new>
 #include <vector>
 #include <map>

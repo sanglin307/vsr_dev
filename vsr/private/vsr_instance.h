@@ -3,8 +3,7 @@
  
 
 struct VkInstance_T {
-	void init();
-	void exit();
+	VkInstance_T();
 	std::map<std::string, PFN_vkVoidFunction> _dispatchTable;
 };
 

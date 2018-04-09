@@ -42,11 +42,12 @@ void vkDestroySurfaceKHR(
 }
 
 
-VkResult  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+VkResult vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
 	VkPhysicalDevice                            physicalDevice,
 	VkSurfaceKHR                                surface,
 	VkSurfaceCapabilitiesKHR*                   pSurfaceCapabilities)
 {
+	*pSurfaceCapabilities = surface->_capability;
 	return VK_SUCCESS;
 }
 
@@ -66,7 +67,9 @@ VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
 WINSurface_T::WINSurface_T(HINSTANCE hinstance, HWND hwnd)
 	:_hinstance(hinstance),_hwnd(hwnd)
 {
-
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+	_capability.currentExtent = { rect.right - rect.left, rect.bottom - rect.top };
 }
 
 VkResult vkCreateWin32SurfaceKHR(
@@ -92,7 +95,7 @@ VkResult vkCreateWin32SurfaceKHR(
 
 	WINSurface_T *pWS = new (pMem) WINSurface_T(pCreateInfo->hinstance,pCreateInfo->hwnd);
 	
-	*pSurface = (VkSurfaceKHR)pMem;
+	*pSurface = pWS;
 
 	return VK_SUCCESS;
 }

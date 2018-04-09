@@ -50,6 +50,12 @@
     <ClInclude Include="private\vsr_swapchain.h">
       <Filter>private</Filter>
     </ClInclude>
+    <ClInclude Include="private\vsr_sync.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_command.h">
+      <Filter>private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp">
@@ -68,6 +74,12 @@
       <Filter>private</Filter>
     </ClCompile>
     <ClCompile Include="private\vsr_swapchain.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_sync.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_command.cpp">
       <Filter>private</Filter>
     </ClCompile>
   </ItemGroup>
