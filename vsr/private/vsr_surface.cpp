@@ -73,6 +73,7 @@ VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
+
 WINSurface_T::WINSurface_T(HINSTANCE hinstance, HWND hwnd)
 	:_hinstance(hinstance),_hwnd(hwnd)
 {
@@ -102,8 +103,7 @@ VkResult vkCreateWin32SurfaceKHR(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	WINSurface_T *pWS = new (pMem) WINSurface_T(pCreateInfo->hinstance,pCreateInfo->hwnd);
-	
+	WINSurface_T *pWS = new (pMem) WINSurface_T(pCreateInfo->hinstance, pCreateInfo->hwnd);
 	*pSurface = pWS;
 
 	return VK_SUCCESS;

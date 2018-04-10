@@ -24,11 +24,9 @@ struct VkSurfaceKHR_T {
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
-class WINSurface_T : public VkSurfaceKHR_T {
-public:
+struct WINSurface_T : public VkSurfaceKHR_T {
 	WINSurface_T(HINSTANCE hinstance, HWND hwnd);
 
-private:
 	HINSTANCE                       _hinstance;
 	HWND                            _hwnd;
 };
