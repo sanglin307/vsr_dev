@@ -25,23 +25,15 @@ VKAPI_ATTR VkResult VKAPI_PTR vkCreateInstance(
 	VkInstance*                                 pInstance)
 {
 
-	VkInstance_T *pMem = nullptr;
-	if (pAllocator != nullptr)
+	try
 	{
-		pMem = (VkInstance_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkInstance_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE);
+		*pInstance = new(pAllocator) VkInstance_T;
 	}
-	else
-	{
-		pMem = (VkInstance_T*)std::malloc(sizeof(VkInstance_T));
-	}
-	
-	if (pMem == nullptr)
+	catch (const std::bad_alloc&)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
-
-	*pInstance = new(pMem) VkInstance_T;
-
+	 
 	return VK_SUCCESS;
 }
 
@@ -49,14 +41,7 @@ VKAPI_ATTR void VKAPI_PTR vkDestroyInstance(
 	VkInstance                                  instance,
 	const VkAllocationCallbacks*                pAllocator)
 {
-	if (pAllocator != nullptr)
-	{
-		pAllocator->pfnFree(pAllocator->pUserData, instance);
-	}
-	else
-	{
-		std::free(instance);
-	}
+	delete(instance, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceVersion(

@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>vsr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsr.lib;dxgi.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;$(VULKAN_SDK)\Third-Party\Bin;../x64/Debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>
       </EntryPointSymbol>

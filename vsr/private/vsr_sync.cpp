@@ -60,3 +60,37 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSemaphore(
 	*pSemaphore = pMem;
 	return VK_SUCCESS;
 }
+
+VKAPI_ATTR void VKAPI_CALL vkDestroySemaphore(
+	VkDevice                                    device,
+	VkSemaphore                                 semaphore,
+	const VkAllocationCallbacks*                pAllocator)
+{
+
+}
+
+VKAPI_ATTR void VKAPI_CALL vkDestroyFence(
+	VkDevice                                    device,
+	VkFence                                     fence,
+	const VkAllocationCallbacks*                pAllocator)
+{
+
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkResetFences(
+	VkDevice                                    device,
+	uint32_t                                    fenceCount,
+	const VkFence*                              pFences)
+{
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(
+	VkDevice                                    device,
+	uint32_t                                    fenceCount,
+	const VkFence*                              pFences,
+	VkBool32                                    waitAll,
+	uint64_t                                    timeout)
+{
+	return VK_SUCCESS;
+}

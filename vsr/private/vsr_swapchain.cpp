@@ -5,14 +5,57 @@
 #include <d3d11.h>
 #endif
 
+#include "vsr_surface.h"
 #include "vsr_swapchain.h"
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
+
+DXGI_FORMAT ConvertToDXFormat(VkFormat format)
+{
+	if (format == VK_FORMAT_B8G8R8A8_UNORM)
+		return DXGI_FORMAT_B8G8R8A8_UNORM;
+	else if (format == VK_FORMAT_B8G8R8A8_SRGB)
+		return DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+	else if (format == VK_FORMAT_R8G8B8A8_UNORM)
+		return DXGI_FORMAT_R8G8B8A8_UNORM;
+	else if (format == VK_FORMAT_R8G8B8A8_SRGB)
+		return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	else
+		assert(0);
+
+	return DXGI_FORMAT_UNKNOWN;
+}
+
+void VkSwapchainKHR_T::Exit_Win32()
+{
+	if (_pImmediateContext != nullptr)
+	{
+		_pImmediateContext->ClearState();
+		_pImmediateContext->Release();
+		_pImmediateContext = nullptr;
+	}
+
+	if (_pSwapChain != nullptr)
+	{
+		_pSwapChain->Release();
+		_pSwapChain = nullptr;
+	}
+
+	if (_pd3dDevice != nullptr)
+	{
+		_pd3dDevice->Release();
+		_pd3dDevice = nullptr;
+	}
+}
+
 VkResult VkSwapchainKHR_T::Init_Win32(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
 {
 	_pFactory = nullptr;
 	_pAdapter = nullptr;
 	_pd3dDevice = nullptr;
+	_pImmediateContext = nullptr;
+	_pSwapChain = nullptr;
+	_pBackBuffer = nullptr;
 
 	HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&_pFactory));
 	assert(SUCCEEDED(hr));
@@ -47,54 +90,35 @@ VkResult VkSwapchainKHR_T::Init_Win32(VkDevice device, const VkSwapchainCreateIn
 	if (FAILED(hr))
 		return VK_ERROR_SURFACE_LOST_KHR;
 
+	WINSurface_T* pSurface = (WINSurface_T*)(pCreateInfo->surface);
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 
-	//pCreateInfo->
-	//DXGI_FORMAT dxFormat = DX11RenderEngine::GetPixelFormat(GConfig->pRenderConfig->ColorFormat);
-	//while (GConfig->pRenderConfig->MultiSampleCount > 1)
-	//{
-	//	_pd3dDevice->CheckMultisampleQualityLevels(dxFormat, GConfig->pRenderConfig->MultiSampleCount, &GConfig->pRenderConfig->MultiSampleQuality);
-	//	if (GConfig->pRenderConfig->MultiSampleQuality == 0) // invalid
-	//	{
-	//		GConfig->pRenderConfig->MultiSampleCount--;
-	//	}
-	//	else
-	//	{
-	//		GConfig->pRenderConfig->MultiSampleQuality--;
-	//		break;
-	//	}
-	//}
+	DXGI_FORMAT dxFormat = ConvertToDXFormat(pCreateInfo->imageFormat);
+	sd.BufferCount = pCreateInfo->minImageCount;
+	sd.BufferDesc.Width = pCreateInfo->imageExtent.width;
+	sd.BufferDesc.Height = pCreateInfo->imageExtent.height;
+	sd.BufferDesc.Format = dxFormat;
+	sd.BufferDesc.RefreshRate.Numerator = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT ;
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	sd.OutputWindow = pSurface->_hwnd;
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
+	sd.Windowed = TRUE;
+	
+	hr = _pFactory->CreateSwapChain(_pd3dDevice, &sd, &_pSwapChain);
+	assert(SUCCEEDED(hr));
+	if (FAILED(hr))
+		return VK_ERROR_SURFACE_LOST_KHR;
+	 
+	hr = _pFactory->MakeWindowAssociation(pSurface->_hwnd, DXGI_MWA_NO_WINDOW_CHANGES);
+	assert(SUCCEEDED(hr));
 
-	//sd.BufferCount = 1;
-	//sd.BufferDesc.Width = GConfig->pRenderConfig->SizeX;
-	//sd.BufferDesc.Height = GConfig->pRenderConfig->SizeY;
-	//sd.BufferDesc.Format = dxFormat;
-	//sd.BufferDesc.RefreshRate.Numerator = 60;
-	//sd.BufferDesc.RefreshRate.Denominator = 1;
-	//sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
-	//sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	//sd.OutputWindow = (HWND)hWnd;
-	//sd.SampleDesc.Count = GConfig->pRenderConfig->MultiSampleCount;
-	//sd.SampleDesc.Quality = GConfig->pRenderConfig->MultiSampleQuality;
-	//sd.Windowed = TRUE;
-
-	//IDXGISwapChain*  pSwapChain;
-	//hr = _pDXGIFactory->CreateSwapChain(_pd3dDevice.get(), &sd, &pSwapChain);
-	//BOOST_ASSERT(SUCCEEDED(hr));
-	//_pSwapChain = MakeComPtr<IDXGISwapChain>(pSwapChain);
-
-	//hr = _pDXGIFactory->MakeWindowAssociation((HWND)hWnd, DXGI_MWA_NO_WINDOW_CHANGES);
-	//BOOST_ASSERT(SUCCEEDED(hr));
-
-	//// Create a render target view
-	//ID3D11Texture2D* pBackBuffer = NULL;
-	//hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-	//BOOST_ASSERT(SUCCEEDED(hr));
-	//DX11RenderTexture2DPtr BackBufferTex = DX11RenderTexture2D::Create(GConfig->pRenderConfig->ColorFormat, sd.BufferDesc.Width, sd.BufferDesc.Height, SV_RenderTarget | SV_ShaderResource, false,
-	//	GConfig->pRenderConfig->MultiSampleCount, GConfig->pRenderConfig->MultiSampleQuality, MakeComPtr<ID3D11Texture2D>(pBackBuffer));
-
-	//SurfaceViewPtr rtView = GEngine->RenderResourceMgr->CreateSurfaceView(SV_RenderTarget, BackBufferTex, GConfig->pRenderConfig->ColorFormat);
+ 
+	hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&_pBackBuffer);
+	assert(SUCCEEDED(hr));
 
 	return VK_SUCCESS;
 }
@@ -104,6 +128,13 @@ VkResult VkSwapchainKHR_T::Init(VkDevice device, const VkSwapchainCreateInfoKHR*
 {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 	return Init_Win32(device, pCreateInfo);
+#endif
+}
+
+void VkSwapchainKHR_T::Exit()
+{
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+	return Exit_Win32();
 #endif
 }
 
@@ -147,7 +178,15 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(
 	VkSwapchainKHR                              swapchain,
 	const VkAllocationCallbacks*                pAllocator)
 {
-
+	swapchain->Exit();
+	if (pAllocator != nullptr)
+	{
+		pAllocator->pfnFree(pAllocator->pUserData, swapchain);
+	}
+	else
+	{
+		std::free(swapchain);
+	}
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(

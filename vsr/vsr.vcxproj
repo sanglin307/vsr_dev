@@ -127,12 +127,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="private\vsr_buffer.h" />
     <ClInclude Include="private\vsr_command.h" />
     <ClInclude Include="private\vsr_common.h" />
+    <ClInclude Include="private\vsr_descriptor.h" />
     <ClInclude Include="private\vsr_device.h" />
+    <ClInclude Include="private\vsr_image.h" />
     <ClInclude Include="private\vsr_instance.h" />
     <ClInclude Include="private\vsr_physicaldevice.h" />
+    <ClInclude Include="private\vsr_pipeline.h" />
     <ClInclude Include="private\vsr_queue.h" />
+    <ClInclude Include="private\vsr_renderpass.h" />
+    <ClInclude Include="private\vsr_shadermodule.h" />
     <ClInclude Include="private\vsr_surface.h" />
     <ClInclude Include="private\vsr_swapchain.h" />
     <ClInclude Include="private\vsr_sync.h" />
@@ -143,11 +149,17 @@
     <ClInclude Include="public\vulkan_win32.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="private\vsr_buffer.cpp" />
     <ClCompile Include="private\vsr_command.cpp" />
+    <ClCompile Include="private\vsr_descriptor.cpp" />
     <ClCompile Include="private\vsr_device.cpp" />
+    <ClCompile Include="private\vsr_image.cpp" />
     <ClCompile Include="private\vsr_instance.cpp" />
     <ClCompile Include="private\vsr_physicaldevice.cpp" />
+    <ClCompile Include="private\vsr_pipeline.cpp" />
     <ClCompile Include="private\vsr_queue.cpp" />
+    <ClCompile Include="private\vsr_renderpass.cpp" />
+    <ClCompile Include="private\vsr_shadermodule.cpp" />
     <ClCompile Include="private\vsr_surface.cpp" />
     <ClCompile Include="private\vsr_swapchain.cpp" />
     <ClCompile Include="private\vsr_sync.cpp" />

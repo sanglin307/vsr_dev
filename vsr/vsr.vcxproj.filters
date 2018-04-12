@@ -56,6 +56,24 @@
     <ClInclude Include="private\vsr_command.h">
       <Filter>private</Filter>
     </ClInclude>
+    <ClInclude Include="private\vsr_image.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_buffer.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_shadermodule.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_pipeline.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_descriptor.h">
+      <Filter>private</Filter>
+    </ClInclude>
+    <ClInclude Include="private\vsr_renderpass.h">
+      <Filter>private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp">
@@ -80,6 +98,24 @@
       <Filter>private</Filter>
     </ClCompile>
     <ClCompile Include="private\vsr_command.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_image.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_buffer.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_shadermodule.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_pipeline.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_descriptor.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_renderpass.cpp">
       <Filter>private</Filter>
     </ClCompile>
   </ItemGroup>

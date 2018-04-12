@@ -101,3 +101,102 @@ VKAPI_ATTR VkResult VKAPI_CALL vkResetCommandPool(
 {
 	return VK_SUCCESS;
 }
+
+VKAPI_ATTR void VKAPI_CALL vkFreeCommandBuffers(
+	VkDevice                                    device,
+	VkCommandPool                               commandPool,
+	uint32_t                                    commandBufferCount,
+	const VkCommandBuffer*                      pCommandBuffers)
+{}
+
+
+VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage(
+	VkCommandBuffer                             commandBuffer,
+	VkImage                                     srcImage,
+	VkImageLayout                               srcImageLayout,
+	VkImage                                     dstImage,
+	VkImageLayout                               dstImageLayout,
+	uint32_t                                    regionCount,
+	const VkImageCopy*                          pRegions)
+{
+
+}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdBindPipeline(
+	VkCommandBuffer                             commandBuffer,
+	VkPipelineBindPoint                         pipelineBindPoint,
+	VkPipeline                                  pipeline)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdSetViewport(
+	VkCommandBuffer                             commandBuffer,
+	uint32_t                                    firstViewport,
+	uint32_t                                    viewportCount,
+	const VkViewport*                           pViewports)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdSetScissor(
+	VkCommandBuffer                             commandBuffer,
+	uint32_t                                    firstScissor,
+	uint32_t                                    scissorCount,
+	const VkRect2D*                             pScissors)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdSetLineWidth(
+	VkCommandBuffer                             commandBuffer,
+	float                                       lineWidth)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBias(
+	VkCommandBuffer                             commandBuffer,
+	float                                       depthBiasConstantFactor,
+	float                                       depthBiasClamp,
+	float                                       depthBiasSlopeFactor)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdSetBlendConstants(
+	VkCommandBuffer                             commandBuffer,
+	const float                                 blendConstants[4])
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBounds(
+	VkCommandBuffer                             commandBuffer,
+	float                                       minDepthBounds,
+	float                                       maxDepthBounds)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdDraw(
+	VkCommandBuffer                             commandBuffer,
+	uint32_t                                    vertexCount,
+	uint32_t                                    instanceCount,
+	uint32_t                                    firstVertex,
+	uint32_t                                    firstInstance)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdPipelineBarrier(
+	VkCommandBuffer                             commandBuffer,
+	VkPipelineStageFlags                        srcStageMask,
+	VkPipelineStageFlags                        dstStageMask,
+	VkDependencyFlags                           dependencyFlags,
+	uint32_t                                    memoryBarrierCount,
+	const VkMemoryBarrier*                      pMemoryBarriers,
+	uint32_t                                    bufferMemoryBarrierCount,
+	const VkBufferMemoryBarrier*                pBufferMemoryBarriers,
+	uint32_t                                    imageMemoryBarrierCount,
+	const VkImageMemoryBarrier*                 pImageMemoryBarriers)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(
+	VkCommandBuffer                             commandBuffer,
+	const VkRenderPassBeginInfo*                pRenderPassBegin,
+	VkSubpassContents                           contents)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdNextSubpass(
+	VkCommandBuffer                             commandBuffer,
+	VkSubpassContents                           contents)
+{}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdEndRenderPass(
+	VkCommandBuffer                             commandBuffer)
+{}
