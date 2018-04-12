@@ -1,6 +1,7 @@
 #include "vsr_common.h"
 #include "vsr_instance.h"
 
+VkAllocationCallbacks *VkInstance_T::_pAllocator = nullptr;
 VkInstance_T::VkInstance_T()
 {
 	_dispatchTable["vkDestroyInstance"] = (PFN_vkVoidFunction)vkDestroyInstance;
@@ -41,7 +42,7 @@ VKAPI_ATTR void VKAPI_PTR vkDestroyInstance(
 	VkInstance                                  instance,
 	const VkAllocationCallbacks*                pAllocator)
 {
-	delete(instance, pAllocator);
+	delete instance;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceVersion(
