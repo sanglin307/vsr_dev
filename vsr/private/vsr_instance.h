@@ -1,19 +1,17 @@
 #pragma once
 
- 
-
-struct VkInstance_T {
-	VkInstance_T();
-	std::map<std::string, PFN_vkVoidFunction> _dispatchTable;
-
+template<typename T, VkSystemAllocationScope scope>
+struct MemoryAlloc {
 	static VkAllocationCallbacks *_pAllocator;
 	static void* operator new(size_t size, const VkAllocationCallbacks* pAllocator)
 	{
 		_pAllocator = (VkAllocationCallbacks*)pAllocator;
 		if (pAllocator != nullptr)
-			return pAllocator->pfnAllocation(pAllocator->pUserData, size, Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE);
+			return pAllocator->pfnAllocation(pAllocator->pUserData, size, Vk_Allocation_Alignment, scope);
 		else
+		{
 			return std::malloc(size);
+		}
 	}
 
 	static void operator delete(void *ptr)
@@ -28,8 +26,13 @@ struct VkInstance_T {
 
 	static void operator delete(void *ptr, const VkAllocationCallbacks* pAllocator)
 	{
-		return delete(ptr);
+		return operator delete(ptr);
 	}
+};
 
+
+struct VkInstance_T :public MemoryAlloc<VkInstance_T, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE> {
+	VkInstance_T();
+	std::map<std::string, PFN_vkVoidFunction> _dispatchTable;
 };
 

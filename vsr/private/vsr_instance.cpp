@@ -1,7 +1,7 @@
 #include "vsr_common.h"
 #include "vsr_instance.h"
 
-VkAllocationCallbacks *VkInstance_T::_pAllocator = nullptr;
+VkAllocationCallbacks *MemoryAlloc<VkInstance_T, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE>::_pAllocator = nullptr;
 VkInstance_T::VkInstance_T()
 {
 	_dispatchTable["vkDestroyInstance"] = (PFN_vkVoidFunction)vkDestroyInstance;
@@ -30,7 +30,7 @@ VKAPI_ATTR VkResult VKAPI_PTR vkCreateInstance(
 	{
 		*pInstance = new(pAllocator) VkInstance_T;
 	}
-	catch (const std::bad_alloc&)
+	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
