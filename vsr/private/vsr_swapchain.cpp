@@ -95,7 +95,7 @@ VkResult VkSwapchainKHR_T::Init_Win32(VkDevice device, const VkSwapchainCreateIn
 	ZeroMemory(&sd, sizeof(sd));
 
 	DXGI_FORMAT dxFormat = ConvertToDXFormat(pCreateInfo->imageFormat);
-	sd.BufferCount = pCreateInfo->minImageCount;
+	sd.BufferCount = 1;
 	sd.BufferDesc.Width = pCreateInfo->imageExtent.width;
 	sd.BufferDesc.Height = pCreateInfo->imageExtent.height;
 	sd.BufferDesc.Format = dxFormat;
@@ -124,17 +124,19 @@ VkResult VkSwapchainKHR_T::Init_Win32(VkDevice device, const VkSwapchainCreateIn
 }
 #endif
 
-VkResult VkSwapchainKHR_T::Init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
+VkAllocationCallbacks *MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+
+VkResult VkSwapchainKHR_T::init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
 {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 	return Init_Win32(device, pCreateInfo);
 #endif
 }
 
-void VkSwapchainKHR_T::Exit()
+VkSwapchainKHR_T::~VkSwapchainKHR_T()
 {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-	return Exit_Win32();
+	 Exit_Win32();
 #endif
 }
 
@@ -144,32 +146,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(
 	const VkAllocationCallbacks*                pAllocator,
 	VkSwapchainKHR*                             pSwapchain)
 {
-	VkSwapchainKHR_T *pMem = nullptr;
-	if (pAllocator != nullptr)
+	try
 	{
-		pMem = (VkSwapchainKHR_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkSwapchainKHR_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
+		*pSwapchain = new(pAllocator) VkSwapchainKHR_T;
 	}
-	else
-	{
-		pMem = (VkSwapchainKHR_T*)std::malloc(sizeof(VkSwapchainKHR_T));
-	}
-
-	if (pMem == nullptr)
+	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	pMem = new(pMem) VkSwapchainKHR_T;
-
-	VkResult res = pMem->Init(device, pCreateInfo);
+	 
+	VkResult res = (*pSwapchain)->init(device, pCreateInfo);
 	if (res != VK_SUCCESS)
 	{
-		vkDestroySwapchainKHR(device,pMem, pAllocator);
+		delete *pSwapchain;
 		return res;
 	}
-
-	*pSwapchain = pMem;
-
+ 
 	return VK_SUCCESS;
 }
 
@@ -178,15 +171,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(
 	VkSwapchainKHR                              swapchain,
 	const VkAllocationCallbacks*                pAllocator)
 {
-	swapchain->Exit();
-	if (pAllocator != nullptr)
-	{
-		pAllocator->pfnFree(pAllocator->pUserData, swapchain);
-	}
-	else
-	{
-		std::free(swapchain);
-	}
+	delete swapchain;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(

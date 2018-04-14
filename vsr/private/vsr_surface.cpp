@@ -31,14 +31,7 @@ void vkDestroySurfaceKHR(
 	VkSurfaceKHR                                surface,
 	const VkAllocationCallbacks*                pAllocator)
 {
-	if (pAllocator != nullptr)
-	{
-		pAllocator->pfnFree(pAllocator->pUserData, (void*)surface);
-	}
-	else
-	{
-		std::free((void*)surface);
-	}
+	delete surface;
 }
 
 
@@ -73,7 +66,7 @@ VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
-
+VkAllocationCallbacks *MemoryAlloc<WINSurface_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
 WINSurface_T::WINSurface_T(HINSTANCE hinstance, HWND hwnd)
 	:_hinstance(hinstance),_hwnd(hwnd)
 {
@@ -88,34 +81,25 @@ VkResult vkCreateWin32SurfaceKHR(
 	const VkAllocationCallbacks*                pAllocator,
 	VkSurfaceKHR*                               pSurface)
 {
-	void *pMem = nullptr;
-	if (pAllocator != nullptr)
+	try
 	{
-		pMem = pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(WINSurface_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE);
+		*pSurface = new(pAllocator) WINSurface_T(pCreateInfo->hinstance, pCreateInfo->hwnd);
 	}
-	else
-	{
-		pMem = std::malloc(sizeof(WINSurface_T));
-	}
-
-	if (pMem == nullptr)
+	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
-
-	WINSurface_T *pWS = new (pMem) WINSurface_T(pCreateInfo->hinstance, pCreateInfo->hwnd);
-	*pSurface = pWS;
 
 	return VK_SUCCESS;
 }
  
 
-//VkBool32 vkGetPhysicalDeviceWin32PresentationSupportKHR(
-//	VkPhysicalDevice                            physicalDevice,
-//	uint32_t                                    queueFamilyIndex)
-//{
-//	return VK_TRUE;
-//}
+VkBool32 vkGetPhysicalDeviceWin32PresentationSupportKHR(
+	VkPhysicalDevice                            physicalDevice,
+	uint32_t                                    queueFamilyIndex)
+{
+	return VK_TRUE;
+}
 
 
 

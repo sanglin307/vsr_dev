@@ -24,7 +24,7 @@ struct VkSurfaceKHR_T {
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
-struct WINSurface_T : public VkSurfaceKHR_T {
+struct WINSurface_T : public VkSurfaceKHR_T ,public MemoryAlloc<WINSurface_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE> {
 	WINSurface_T(HINSTANCE hinstance, HWND hwnd);
 
 	HINSTANCE                       _hinstance;

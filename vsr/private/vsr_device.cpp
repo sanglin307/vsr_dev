@@ -2,17 +2,37 @@
 #include "vsr_queue.h"
 #include "vsr_physicaldevice.h"
 #include "vsr_device.h"
-
-
 #include <algorithm>
 
+VkAllocationCallbacks *MemoryAlloc<VkDevice_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
 VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator)
 {
 	_dispatchTable["vkDestroyDevice"] = (PFN_vkVoidFunction)vkDestroyDevice;
 	_dispatchTable["vkEnumerateDeviceExtensionProperties"] = (PFN_vkVoidFunction)vkEnumerateDeviceExtensionProperties;
 	_dispatchTable["vkEnumerateDeviceLayerProperties"] = (PFN_vkVoidFunction)vkEnumerateDeviceLayerProperties;
 	_dispatchTable["vkGetDeviceQueue"] = (PFN_vkVoidFunction)vkGetDeviceQueue;
-
+	_dispatchTable["vkDeviceWaitIdle"] = (PFN_vkVoidFunction)vkDeviceWaitIdle;
+	_dispatchTable["vkAllocateMemory"] = (PFN_vkVoidFunction)vkAllocateMemory;
+	_dispatchTable["vkFreeMemory"] = (PFN_vkVoidFunction)vkFreeMemory;
+	_dispatchTable["vkMapMemory"] = (PFN_vkVoidFunction)vkMapMemory;
+	_dispatchTable["vkUnmapMemory"] = (PFN_vkVoidFunction)vkUnmapMemory;
+	_dispatchTable["vkBindBufferMemory"] = (PFN_vkVoidFunction)vkBindBufferMemory;
+	_dispatchTable["vkBindImageMemory"] = (PFN_vkVoidFunction)vkBindImageMemory;
+	_dispatchTable["vkCreateFence"] = (PFN_vkVoidFunction)vkCreateFence;
+	_dispatchTable["vkDestroyFence"] = (PFN_vkVoidFunction)vkDestroyFence;
+	_dispatchTable["vkResetFences"] = (PFN_vkVoidFunction)vkResetFences;
+	_dispatchTable["vkWaitForFences"] = (PFN_vkVoidFunction)vkWaitForFences;
+	_dispatchTable["vkCreateSemaphore"] = (PFN_vkVoidFunction)vkCreateSemaphore;
+	_dispatchTable["vkDestroySemaphore"] = (PFN_vkVoidFunction)vkDestroySemaphore;
+	_dispatchTable["vkCreateCommandPool"] = (PFN_vkVoidFunction)vkCreateCommandPool;
+	_dispatchTable["vkDestroyCommandPool"] = (PFN_vkVoidFunction)vkDestroyCommandPool;
+	_dispatchTable["vkResetCommandPool"] = (PFN_vkVoidFunction)vkResetCommandPool;
+	_dispatchTable["vkFreeCommandBuffers"] = (PFN_vkVoidFunction)vkFreeCommandBuffers;
+	_dispatchTable["vkAllocateCommandBuffers"] = (PFN_vkVoidFunction)vkAllocateCommandBuffers;
+	_dispatchTable["vkBeginCommandBuffer"] = (PFN_vkVoidFunction)vkBeginCommandBuffer;
+	_dispatchTable["vkEndCommandBuffer"] = (PFN_vkVoidFunction)vkEndCommandBuffer;
+	
+ 
 	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;
 	_dispatchTable["vkDestroySwapchainKHR"] = (PFN_vkVoidFunction)vkDestroySwapchainKHR;
 	_dispatchTable["vkGetSwapchainImagesKHR"] = (PFN_vkVoidFunction)vkGetSwapchainImagesKHR;
@@ -24,17 +44,10 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 		if (pCreateInfo->pQueueCreateInfos[i].queueFamilyIndex >= physicalDevice->_vecQueueFamily.size())
 			return VK_ERROR_INITIALIZATION_FAILED;
 
+		VkQueue_T *pMem = nullptr;
 		for (uint32_t j = 0; j < pCreateInfo->pQueueCreateInfos[i].queueCount; j++)
 		{
-			VkQueue_T *pMem = nullptr;
-			if (pAllocator != nullptr)
-				pMem = (VkQueue_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkQueue_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
-			else
-				pMem = (VkQueue_T*)std::malloc(sizeof(VkQueue_T));
-
-			if (pMem == nullptr)
-				return VK_ERROR_OUT_OF_HOST_MEMORY;
-
+			pMem = new (pAllocator) VkQueue_T;
 			pMem->_queueFamilyIndex = pCreateInfo->pQueueCreateInfos[i].queueFamilyIndex;
 			pMem->_priority = pCreateInfo->pQueueCreateInfos[i].pQueuePriorities[j];
 			_vecQueues.push_back(pMem);
@@ -57,23 +70,13 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 
 }
 
-void VkDevice_T::exit(const VkAllocationCallbacks* pAllocator)
+VkDevice_T::~VkDevice_T()
 {
-	if (pAllocator != nullptr)
+	for (int i = 0; i < _vecQueues.size(); i++)
 	{
-		for (int i = 0; i < _vecQueues.size(); i++)
-		{
-			pAllocator->pfnFree(pAllocator->pUserData, _vecQueues[i]);
-		}
+		delete _vecQueues[i];
 	}
-	else
-	{
-		for (int i = 0; i < _vecQueues.size(); i++)
-		{
-			std::free(_vecQueues[i]);
-		}
-	}
-
+	_vecQueues.clear();
 	_dispatchTable.clear();
 }
 
@@ -83,32 +86,22 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(
 	const VkAllocationCallbacks*                pAllocator,
 	VkDevice*                                   pDevice)
 {
-	VkDevice_T *pMem = nullptr;
-	if (pAllocator != nullptr)
+	try
 	{
-		pMem = (VkDevice_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkDevice_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
+		*pDevice = new(pAllocator) VkDevice_T;
 	}
-	else
-	{
-		pMem = (VkDevice_T*)std::malloc(sizeof(VkDevice_T));
-	}
-
-	if (pMem == nullptr)
+	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	pMem = new(pMem) VkDevice_T;
-
-	VkResult res = pMem->init(physicalDevice,pCreateInfo,pAllocator);
+	VkResult res = (*pDevice)->init(physicalDevice,pCreateInfo,pAllocator);
 	if (res != VK_SUCCESS)
 	{
-		vkDestroyDevice(pMem, pAllocator);
+		delete (*pDevice);
 		return res;
 	}
-
-	*pDevice = pMem;
-
+ 
 	return VK_SUCCESS;
 }
 
@@ -117,16 +110,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(
 	VkDevice                                    device,
 	const VkAllocationCallbacks*                pAllocator)
 {
-	device->exit(pAllocator);
-	if (pAllocator != nullptr)
-	{
-		pAllocator->pfnFree(pAllocator->pUserData, device);
-	}
-	else
-	{
-		std::free(device);
-	}
-
+	delete device;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateDeviceExtensionProperties(

@@ -17,6 +17,15 @@ VkInstance_T::VkInstance_T()
 
 	_dispatchTable["vkGetPhysicalDeviceSurfaceSupportKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceSupportKHR;
 	_dispatchTable["vkGetPhysicalDeviceSurfaceFormatsKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceFormatsKHR;
+	_dispatchTable["vkGetPhysicalDeviceSurfaceCapabilitiesKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
+	_dispatchTable["vkGetPhysicalDeviceSurfacePresentModesKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfacePresentModesKHR;
+	_dispatchTable["vkDestroySurfaceKHR"] = (PFN_vkVoidFunction)vkDestroySurfaceKHR;
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+	_dispatchTable["vkCreateWin32SurfaceKHR"] = (PFN_vkVoidFunction)vkCreateWin32SurfaceKHR;
+	_dispatchTable["vkGetPhysicalDeviceWin32PresentationSupportKHR"] = (PFN_vkVoidFunction)vkGetPhysicalDeviceWin32PresentationSupportKHR;
+#endif
+	
 }
  
 

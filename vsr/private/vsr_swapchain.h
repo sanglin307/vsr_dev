@@ -1,9 +1,9 @@
 #pragma once
 
-struct VkSwapchainKHR_T {
+struct VkSwapchainKHR_T : public MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE> {
 
-	VkResult Init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo);
-	void Exit();
+	VkResult init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo);
+	~VkSwapchainKHR_T();
 
 	std::vector<VkImage_T*>         _vecImages;
 #ifdef VK_USE_PLATFORM_WIN32_KHR

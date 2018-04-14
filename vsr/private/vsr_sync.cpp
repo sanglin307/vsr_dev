@@ -2,71 +2,32 @@
 #include "vsr_sync.h"
 
 
+VkAllocationCallbacks *MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+VkFence_T::VkFence_T(VkDevice device, const VkFenceCreateInfo* pCreateInfo)
+{
+	_state = false;
+	_device = device;
+
+	if (pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT)
+		_state = true;
+}
+
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateFence(
 	VkDevice                                    device,
 	const VkFenceCreateInfo*                    pCreateInfo,
 	const VkAllocationCallbacks*                pAllocator,
 	VkFence*                                    pFence)
 {
-	VkFence_T *pMem = nullptr;
-	if (pAllocator != nullptr)
+	try
 	{
-		pMem = (VkFence_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkFence_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
+		*pFence = new(pAllocator) VkFence_T(device,pCreateInfo);
 	}
-	else
-	{
-		pMem = (VkFence_T*)std::malloc(sizeof(VkFence_T));
-	}
-
-	if (pMem == nullptr)
+	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
-
-	pMem->_state = false;
-	pMem->_device = device;
-
-	if (pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT)
-		pMem->_state = true;
-
-	*pFence = pMem;
+ 
 	return VK_SUCCESS;
-}
-
-VKAPI_ATTR VkResult VKAPI_CALL vkCreateSemaphore(
-	VkDevice                                    device,
-	const VkSemaphoreCreateInfo*                pCreateInfo,
-	const VkAllocationCallbacks*                pAllocator,
-	VkSemaphore*                                pSemaphore)
-{
-	VkSemaphore_T *pMem = nullptr;
-	if (pAllocator != nullptr)
-	{
-		pMem = (VkSemaphore_T*)pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(VkSemaphore_T), Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
-	}
-	else
-	{
-		pMem = (VkSemaphore_T*)std::malloc(sizeof(VkSemaphore_T));
-	}
-
-	if (pMem == nullptr)
-	{
-		return VK_ERROR_OUT_OF_HOST_MEMORY;
-	}
-
-	pMem->_state = false;
-	pMem->_device = device;
-
-	*pSemaphore = pMem;
-	return VK_SUCCESS;
-}
-
-VKAPI_ATTR void VKAPI_CALL vkDestroySemaphore(
-	VkDevice                                    device,
-	VkSemaphore                                 semaphore,
-	const VkAllocationCallbacks*                pAllocator)
-{
-
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyFence(
@@ -74,7 +35,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyFence(
 	VkFence                                     fence,
 	const VkAllocationCallbacks*                pAllocator)
 {
-
+	delete fence;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkResetFences(
@@ -94,3 +55,41 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(
 {
 	return VK_SUCCESS;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+VkAllocationCallbacks *MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+VkSemaphore_T::VkSemaphore_T(VkDevice device, const VkSemaphoreCreateInfo* pCreateInfo)
+	:_device(device),_state(false)
+{
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateSemaphore(
+	VkDevice                                    device,
+	const VkSemaphoreCreateInfo*                pCreateInfo,
+	const VkAllocationCallbacks*                pAllocator,
+	VkSemaphore*                                pSemaphore)
+{
+	try
+	{
+		*pSemaphore = new(pAllocator) VkSemaphore_T(device, pCreateInfo);
+	}
+	catch (...)
+	{
+		return VK_ERROR_OUT_OF_HOST_MEMORY;
+	}
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR void VKAPI_CALL vkDestroySemaphore(
+	VkDevice                                    device,
+	VkSemaphore                                 semaphore,
+	const VkAllocationCallbacks*                pAllocator)
+{
+	delete semaphore;
+}
+
+
+

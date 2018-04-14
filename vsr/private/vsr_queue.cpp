@@ -1,6 +1,7 @@
 #include "vsr_common.h"
 #include "vsr_queue.h"
 
+VkAllocationCallbacks *MemoryAlloc<VkQueue_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
 VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(
 	VkQueue                                     queue,
 	uint32_t                                    submitCount,
