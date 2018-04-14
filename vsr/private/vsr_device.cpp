@@ -31,8 +31,13 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 	_dispatchTable["vkAllocateCommandBuffers"] = (PFN_vkVoidFunction)vkAllocateCommandBuffers;
 	_dispatchTable["vkBeginCommandBuffer"] = (PFN_vkVoidFunction)vkBeginCommandBuffer;
 	_dispatchTable["vkEndCommandBuffer"] = (PFN_vkVoidFunction)vkEndCommandBuffer;
+	_dispatchTable["vkGetImageMemoryRequirements"] = (PFN_vkVoidFunction)vkGetImageMemoryRequirements;
+	_dispatchTable["vkCreateImage"] = (PFN_vkVoidFunction)vkCreateImage;
+	_dispatchTable["vkDestroyImage"] = (PFN_vkVoidFunction)vkDestroyImage;
+	_dispatchTable["vkGetImageSubresourceLayout"] = (PFN_vkVoidFunction)vkGetImageSubresourceLayout;
+	_dispatchTable["vkCreateImageView"] = (PFN_vkVoidFunction)vkCreateImageView;
+	_dispatchTable["vkDestroyImageView"] = (PFN_vkVoidFunction)vkDestroyImageView;
 	
- 
 	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;
 	_dispatchTable["vkDestroySwapchainKHR"] = (PFN_vkVoidFunction)vkDestroySwapchainKHR;
 	_dispatchTable["vkGetSwapchainImagesKHR"] = (PFN_vkVoidFunction)vkGetSwapchainImagesKHR;
@@ -44,13 +49,11 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 		if (pCreateInfo->pQueueCreateInfos[i].queueFamilyIndex >= physicalDevice->_vecQueueFamily.size())
 			return VK_ERROR_INITIALIZATION_FAILED;
 
-		VkQueue_T *pMem = nullptr;
+		VkQueue_T *pQueue = nullptr;
 		for (uint32_t j = 0; j < pCreateInfo->pQueueCreateInfos[i].queueCount; j++)
 		{
-			pMem = new (pAllocator) VkQueue_T;
-			pMem->_queueFamilyIndex = pCreateInfo->pQueueCreateInfos[i].queueFamilyIndex;
-			pMem->_priority = pCreateInfo->pQueueCreateInfos[i].pQueuePriorities[j];
-			_vecQueues.push_back(pMem);
+			pQueue = new (pAllocator) VkQueue_T(pCreateInfo->pQueueCreateInfos[i].queueFamilyIndex, pCreateInfo->pQueueCreateInfos[i].pQueuePriorities[j]);
+			_vecQueues.push_back(pQueue);
 		}
 	}
 

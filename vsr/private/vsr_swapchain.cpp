@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #endif
 
+#include "vsr_image.h"
 #include "vsr_surface.h"
 #include "vsr_swapchain.h"
 
@@ -129,12 +130,27 @@ VkAllocationCallbacks *MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_
 VkResult VkSwapchainKHR_T::init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
 {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-	return Init_Win32(device, pCreateInfo);
+	VkResult res = Init_Win32(device, pCreateInfo);
+	if (res != VK_SUCCESS)
+		return res;
 #endif
+	for (uint32_t i = 0; i < pCreateInfo->minImageCount; i++)
+	{
+		VkImage image = new (_pAllocator) VkImage_T(pCreateInfo->imageFormat,pCreateInfo->imageColorSpace,pCreateInfo->imageExtent,
+			pCreateInfo->imageArrayLayers,pCreateInfo->imageUsage,pCreateInfo->imageSharingMode);
+		_vecImages.push_back(image);
+	}
+	return VK_SUCCESS;
 }
 
 VkSwapchainKHR_T::~VkSwapchainKHR_T()
 {
+	for (uint32_t i = 0; i < _vecImages.size(); i++)
+	{
+		delete _vecImages[i];
+	}
+	_vecImages.clear();
+
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 	 Exit_Win32();
 #endif
