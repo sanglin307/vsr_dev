@@ -66,7 +66,7 @@ VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
-VkAllocationCallbacks *MemoryAlloc<WINSurface_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+VkAllocationCallbacks *MemoryAlloc<WINSurface_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 WINSurface_T::WINSurface_T(HINSTANCE hinstance, HWND hwnd)
 	:_hinstance(hinstance),_hwnd(hwnd)
 {

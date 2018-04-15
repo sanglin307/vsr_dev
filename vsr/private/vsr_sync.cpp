@@ -2,7 +2,7 @@
 #include "vsr_sync.h"
 
 
-VkAllocationCallbacks *MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+VkAllocationCallbacks *MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkFence_T::VkFence_T(VkDevice device, const VkFenceCreateInfo* pCreateInfo)
 {
 	_state = false;
@@ -59,7 +59,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-VkAllocationCallbacks *MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+VkAllocationCallbacks *MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkSemaphore_T::VkSemaphore_T(VkDevice device, const VkSemaphoreCreateInfo* pCreateInfo)
 	:_device(device),_state(false)
 {

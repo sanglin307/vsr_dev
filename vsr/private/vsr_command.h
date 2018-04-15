@@ -16,7 +16,7 @@ struct VkCommandBuffer_T {
 	VkCommandBufferLevel _level;
 };
 
-struct VkCommandPool_T :  public MemoryAlloc<VkCommandPool_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE> {
+struct VkCommandPool_T :  public MemoryAlloc<VkCommandPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkCommandPool_T(VkDevice device, const VkCommandPoolCreateInfo* pCreateInfo);
 	VkDevice_T *_device;
 	VkCommandPoolCreateFlags _flag;

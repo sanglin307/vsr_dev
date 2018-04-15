@@ -125,7 +125,21 @@ VkResult VkSwapchainKHR_T::Init_Win32(VkDevice device, const VkSwapchainCreateIn
 }
 #endif
 
-VkAllocationCallbacks *MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
+VkAllocationCallbacks *MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
+
+VkResult VkSwapchainKHR_T::GetSwapchainImagesKHR(uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages)
+{
+	*pSwapchainImageCount = (uint32_t)_vecImages.size();
+	if (pSwapchainImages != nullptr)
+	{
+		for (uint32_t i = 0; i < _vecImages.size(); i++)
+		{
+			pSwapchainImages[i] = _vecImages[i];
+		}
+	}
+
+	return VK_SUCCESS;
+}
 
 VkResult VkSwapchainKHR_T::init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
 {
@@ -136,8 +150,10 @@ VkResult VkSwapchainKHR_T::init(VkDevice device, const VkSwapchainCreateInfoKHR*
 #endif
 	for (uint32_t i = 0; i < pCreateInfo->minImageCount; i++)
 	{
-		VkImage image = new (_pAllocator) VkImage_T(pCreateInfo->imageFormat,pCreateInfo->imageColorSpace,pCreateInfo->imageExtent,
-			pCreateInfo->imageArrayLayers,pCreateInfo->imageUsage,pCreateInfo->imageSharingMode);
+		VkExtent3D extent = { pCreateInfo->imageExtent.width,pCreateInfo->imageExtent.height,0 };
+		VkImage image = new (_pAllocator) VkImage_T(VK_IMAGE_TYPE_2D,pCreateInfo->imageFormat,extent,
+			pCreateInfo->imageArrayLayers,pCreateInfo->imageUsage,pCreateInfo->imageSharingMode,pCreateInfo->queueFamilyIndexCount,
+			pCreateInfo->pQueueFamilyIndices);
 		_vecImages.push_back(image);
 	}
 	return VK_SUCCESS;
@@ -196,7 +212,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(
 	uint32_t*                                   pSwapchainImageCount,
 	VkImage*                                    pSwapchainImages)
 {
-	return VK_SUCCESS;
+	return swapchain->GetSwapchainImagesKHR(pSwapchainImageCount, pSwapchainImages);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(
