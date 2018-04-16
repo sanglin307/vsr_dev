@@ -1,5 +1,4 @@
 #include "vsr_common.h"
-#include "vsr_queue.h"
 #include "vsr_physicaldevice.h"
 #include "vsr_device.h"
 #include <algorithm>
@@ -7,6 +6,8 @@
 VkAllocationCallbacks *MemoryAlloc<VkDevice_T, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE>::_pAllocator = nullptr;
 VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator)
 {
+	_physicalDevice = physicalDevice;
+
 	_dispatchTable["vkDestroyDevice"] = (PFN_vkVoidFunction)vkDestroyDevice;
 	_dispatchTable["vkEnumerateDeviceExtensionProperties"] = (PFN_vkVoidFunction)vkEnumerateDeviceExtensionProperties;
 	_dispatchTable["vkEnumerateDeviceLayerProperties"] = (PFN_vkVoidFunction)vkEnumerateDeviceLayerProperties;
@@ -181,59 +182,6 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceQueue(
 
 VKAPI_ATTR VkResult VKAPI_CALL vkDeviceWaitIdle(
 	VkDevice                                    device)
-{
-	return VK_SUCCESS;
-}
-
-VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(
-	VkDevice                                    device,
-	const VkMemoryAllocateInfo*                 pAllocateInfo,
-	const VkAllocationCallbacks*                pAllocator,
-	VkDeviceMemory*                             pMemory)
-{
-	return VK_SUCCESS;
-}
-
-VKAPI_ATTR void VKAPI_CALL vkFreeMemory(
-	VkDevice                                    device,
-	VkDeviceMemory                              memory,
-	const VkAllocationCallbacks*                pAllocator)
-{
-
-}
-
-VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(
-	VkDevice                                    device,
-	VkDeviceMemory                              memory,
-	VkDeviceSize                                offset,
-	VkDeviceSize                                size,
-	VkMemoryMapFlags                            flags,
-	void**                                      ppData)
-{
-	return VK_SUCCESS;
-}
-
-VKAPI_ATTR void VKAPI_CALL vkUnmapMemory(
-	VkDevice                                    device,
-	VkDeviceMemory                              memory)
-{
-
-}
-
-VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory(
-	VkDevice                                    device,
-	VkBuffer                                    buffer,
-	VkDeviceMemory                              memory,
-	VkDeviceSize                                memoryOffset)
-{
-	return VK_SUCCESS;
-}
-
-VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory(
-	VkDevice                                    device,
-	VkImage                                     image,
-	VkDeviceMemory                              memory,
-	VkDeviceSize                                memoryOffset)
 {
 	return VK_SUCCESS;
 }

@@ -8,7 +8,7 @@ VkPhysicalDevice_T* VkPhysicalDevice_T::_instance = nullptr;
 
 VkPhysicalDevice_T::VkPhysicalDevice_T()
 {
-	vQueueFamily qf;
+	vsrQueueFamily qf;
 	qf._property.queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
 	qf._property.queueCount = 16;
 	qf._property.minImageTransferGranularity = { 1,1,1 };

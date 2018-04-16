@@ -1,13 +1,13 @@
 #pragma once
 
-
+#include "vsr_queue.h"
 
 
 struct VkPhysicalDevice_T {
 	static struct VkPhysicalDevice_T* _instance;
 	static VkPhysicalDevice_T* Get();
  
-	std::vector<vQueueFamily> _vecQueueFamily;
+	std::vector<vsrQueueFamily> _vecQueueFamily;
 	VkPhysicalDeviceProperties Properties = {
 		VK_API_VERSION_1_0,            //apiVersion;
 		VK_MAKE_VERSION(0,1,0),        //driverVersion;

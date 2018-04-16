@@ -134,6 +134,7 @@
     <ClInclude Include="private\vsr_device.h" />
     <ClInclude Include="private\vsr_image.h" />
     <ClInclude Include="private\vsr_instance.h" />
+    <ClInclude Include="private\vsr_memory.h" />
     <ClInclude Include="private\vsr_physicaldevice.h" />
     <ClInclude Include="private\vsr_pipeline.h" />
     <ClInclude Include="private\vsr_queue.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="private\vsr_device.cpp" />
     <ClCompile Include="private\vsr_image.cpp" />
     <ClCompile Include="private\vsr_instance.cpp" />
+    <ClCompile Include="private\vsr_memory.cpp" />
     <ClCompile Include="private\vsr_physicaldevice.cpp" />
     <ClCompile Include="private\vsr_pipeline.cpp" />
     <ClCompile Include="private\vsr_queue.cpp" />

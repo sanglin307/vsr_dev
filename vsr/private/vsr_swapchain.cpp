@@ -152,8 +152,8 @@ VkResult VkSwapchainKHR_T::init(VkDevice device, const VkSwapchainCreateInfoKHR*
 	{
 		VkExtent3D extent = { pCreateInfo->imageExtent.width,pCreateInfo->imageExtent.height,0 };
 		VkImage image = new (_pAllocator) VkImage_T(VK_IMAGE_TYPE_2D,pCreateInfo->imageFormat,extent,
-			pCreateInfo->imageArrayLayers,pCreateInfo->imageUsage,pCreateInfo->imageSharingMode,pCreateInfo->queueFamilyIndexCount,
-			pCreateInfo->pQueueFamilyIndices);
+			pCreateInfo->imageArrayLayers, VK_IMAGE_TILING_OPTIMAL,pCreateInfo->imageUsage,pCreateInfo->imageSharingMode,pCreateInfo->queueFamilyIndexCount,
+			pCreateInfo->pQueueFamilyIndices, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 		_vecImages.push_back(image);
 	}
 	return VK_SUCCESS;

@@ -1,6 +1,6 @@
 #pragma once
 
-struct vQueueFamily {
+struct vsrQueueFamily {
 	VkQueueFamilyProperties _property;
 	VkBool32 _supportSurface;
 };

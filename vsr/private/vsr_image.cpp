@@ -1,11 +1,13 @@
 #include "vsr_common.h"
 #include "vsr_image.h"
+#include "vsr_device.h"
+#include "vsr_physicaldevice.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 
-VkImage_T::VkImage_T(VkImageType type,VkFormat format, VkExtent3D extent, uint32_t arrayLayers, VkImageUsageFlags usage, VkSharingMode sharingMode,
-	uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices)
-:_type(type),_format(format),_extent(extent),_arrayLayers(arrayLayers),_usage(usage),_sharingMode(sharingMode), _pByteData(nullptr)
+VkImage_T::VkImage_T(VkImageType type,VkFormat format, VkExtent3D extent, uint32_t arrayLayers, VkImageTiling tiling,VkImageUsageFlags usage, VkSharingMode sharingMode,
+	uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices, VkImageLayout layout)
+:_type(type),_format(format),_extent(extent),_arrayLayers(arrayLayers),_tiling(tiling),_usage(usage),_sharingMode(sharingMode),_layout(layout),_pData(nullptr)
 {
 	if (_sharingMode == VK_SHARING_MODE_CONCURRENT)
 	{
@@ -13,53 +15,66 @@ VkImage_T::VkImage_T(VkImageType type,VkFormat format, VkExtent3D extent, uint32
 			_vecQueueFamilyIndices.push_back(pQueueFamilyIndices[i]);
 	}
 
-	uint32_t size = 0;
+	_size = 0;
 	if (VkImage_T::IsDepthStencilFormat(format))
 	{
 		assert(type == VK_IMAGE_TYPE_2D);
-		size = VkImage_T::GetDepthStencilFormatSize(format);
+		_size = VkImage_T::GetDepthStencilFormatSize(format);
 	}
 	else
 	{
-		size = VkImage_T::GetImageComponentNum(format) * VkImage_T::GetImageComponentSize(format);
+		_size = VkImage_T::GetImageComponentNum(format) * VkImage_T::GetImageComponentSize(format);
 	}
 	
 	if (type == VK_IMAGE_TYPE_1D)
-		size = size * extent.width * arrayLayers;
+		_size = _size * extent.width * arrayLayers;
 	else if (type == VK_IMAGE_TYPE_2D)
-		size = size * extent.width * extent.height * arrayLayers;
+		_size = _size * extent.width * extent.height * arrayLayers;
 	else if (type == VK_IMAGE_TYPE_3D)
-		size = size * extent.width * extent.height * extent.depth;
-
-	if (_pAllocator != nullptr)
-		_pByteData = (uint8_t*)_pAllocator->pfnAllocation(_pAllocator->pUserData, size, Vk_Allocation_Alignment, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
-	else
-		_pByteData = (uint8_t*)std::malloc(size);
-
-	if (_pByteData == nullptr)
-		throw std::bad_alloc();
-
-
+		_size = _size * extent.width * extent.height * extent.depth;
 }
 
 VkImage_T::VkImage_T(const VkImageCreateInfo *pCreateInfo)
 {
-	VkImage_T(pCreateInfo->imageType,pCreateInfo->format, pCreateInfo->extent, pCreateInfo->arrayLayers, pCreateInfo->usage, 
-		pCreateInfo->sharingMode, pCreateInfo->queueFamilyIndexCount,pCreateInfo->pQueueFamilyIndices);
+	VkImage_T(pCreateInfo->imageType,pCreateInfo->format, pCreateInfo->extent, pCreateInfo->arrayLayers, pCreateInfo->tiling,pCreateInfo->usage, 
+		pCreateInfo->sharingMode, pCreateInfo->queueFamilyIndexCount,pCreateInfo->pQueueFamilyIndices,pCreateInfo->initialLayout);
 }
 
 VkImage_T::~VkImage_T()
 {
-	if (_pByteData != nullptr)
+}
+
+void VkImage_T::GetImageMemoryRequirements(VkDevice device,VkMemoryRequirements* pMemoryRequirements)
+{
+	pMemoryRequirements->alignment = Vk_Allocation_Alignment;
+	pMemoryRequirements->size = _size;
+	VkPhysicalDeviceMemoryProperties prop;
+	device->_physicalDevice->GetPhysicalDeviceMemoryProperties(&prop);
+	if (_layout == VK_IMAGE_LAYOUT_PREINITIALIZED)
 	{
-		if (_pAllocator != nullptr)
-			_pAllocator->pfnFree(_pAllocator->pUserData, _pByteData);
-		else
+		for (uint32_t i = 0; i < prop.memoryTypeCount; i++)
 		{
-			std::free(_pByteData);
+			if (prop.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+			{
+				pMemoryRequirements->memoryTypeBits = 1 << i;
+				return;
+			}
 		}
-		_pByteData = nullptr;
 	}
+	else
+	{
+		for (uint32_t i = 0; i < prop.memoryTypeCount; i++)
+		{
+			if (prop.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
+			{
+				pMemoryRequirements->memoryTypeBits = 1 << i;
+				return;
+			}
+		}
+	}
+	
+	assert(0); // not find right memory type
+	return;
 }
 
 uint32_t VkImage_T::GetImageComponentSize(VkFormat format)
@@ -151,7 +166,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements(
 	VkImage                                     image,
 	VkMemoryRequirements*                       pMemoryRequirements)
 {
-
+	image->GetImageMemoryRequirements(device,pMemoryRequirements);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(
@@ -190,10 +205,21 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageSubresourceLayout(
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 VkAllocationCallbacks *MemoryAlloc<VkImageView_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkImageView_T::VkImageView_T(const VkImageViewCreateInfo* pCreateInfo)
+	:_image(pCreateInfo->image),_type(pCreateInfo->viewType),_format(pCreateInfo->format),_componentsMap(pCreateInfo->components),_range(pCreateInfo->subresourceRange)
 {
+	assert(IsCompatible(_format, _image->_format));
+}
 
+bool VkImageView_T::IsCompatible(VkFormat viewFormat, VkFormat imageFormat)
+{
+	if (VkImage_T::IsDepthStencilFormat(viewFormat))
+		return viewFormat == imageFormat;
+
+	return VkImage_T::GetImageComponentSize(viewFormat) == VkImage_T::GetImageComponentSize(imageFormat) &&
+		VkImage_T::GetImageComponentNum(viewFormat) == VkImage_T::GetImageComponentNum(imageFormat);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(

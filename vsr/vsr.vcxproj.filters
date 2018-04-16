@@ -74,6 +74,9 @@
     <ClInclude Include="private\vsr_renderpass.h">
       <Filter>private</Filter>
     </ClInclude>
+    <ClInclude Include="private\vsr_memory.h">
+      <Filter>private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\vsr_instance.cpp">
@@ -116,6 +119,9 @@
       <Filter>private</Filter>
     </ClCompile>
     <ClCompile Include="private\vsr_renderpass.cpp">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="private\vsr_memory.cpp">
       <Filter>private</Filter>
     </ClCompile>
   </ItemGroup>
