@@ -1,10 +1,12 @@
 #pragma once
+#define NOMINMAX
 #include <cassert>
 #include <cstdlib>
 #include <atomic>
 #include <new>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 #include "../public/vulkan.h"
 

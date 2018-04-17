@@ -1,17 +1,19 @@
 #pragma once
 
 struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
-	VkImage_T(VkImageType type,VkFormat format,VkExtent3D extent,uint32_t arrayLayers,VkImageTiling tiling,VkImageUsageFlags usage,VkSharingMode sharingMode,
+	VkImage_T(VkImageType type,VkFormat format,VkExtent3D extent,uint32_t mipLevels,uint32_t arrayLayers,VkImageTiling tiling,VkImageUsageFlags usage,VkSharingMode sharingMode,
 		      uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices, VkImageLayout layout);
 	VkImage_T(const VkImageCreateInfo *pCreateInfo);
 	~VkImage_T();
 
 	void GetImageMemoryRequirements(VkDevice device, VkMemoryRequirements* pMemoryRequirements);
+	void GetImageSubresourceLayout(VkDevice device, const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout);
 	void BindMemory(void* pData)
 	{
-		assert(_pData == nullptr);
 		_pData = pData;
 	}
+
+	uint32_t GetMipmapSize(uint32_t mipLevel);
 
 	static uint32_t GetImageComponentSize(VkFormat format);
 	static uint32_t GetImageComponentNum(VkFormat format);
@@ -22,13 +24,16 @@ struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 	VkFormat                         _format;
 	VkExtent3D                       _extent;
 	uint32_t                         _arrayLayers;
+	uint32_t                         _mipLevels;
 	VkImageUsageFlags                _usage;
 	VkSharingMode                    _sharingMode;
 	std::vector<uint32_t>            _vecQueueFamilyIndices;
 	VkImageLayout                    _layout;
 	VkImageTiling                    _tiling;
 
-	VkDeviceSize                     _size;
+	uint32_t                         _elementsize;    // size for element for image , = component size * component num
+	VkDeviceSize                     _planesize;      // size for one sub plane for image, including mipmap.
+	VkDeviceSize                     _totalsize;
 	void*                            _pData;
 };
 

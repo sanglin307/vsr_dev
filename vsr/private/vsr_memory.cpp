@@ -24,7 +24,7 @@ VkDeviceMemory_T::~VkDeviceMemory_T()
 void* VkDeviceMemory_T::GetAddress(VkDeviceSize offset,VkDeviceSize size)
 {
 	assert(_pData != nullptr);
-	if (offset < 0 || size <= 0 || offset + size >= _size)
+	if (offset < 0 || size != VK_WHOLE_SIZE && offset + size >= _size)
 		return nullptr;
 
 	return (void*)((uint8_t*)_pData + offset);
@@ -64,6 +64,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(
 	VkMemoryMapFlags                            flags,
 	void**                                      ppData)
 {
+	*ppData = memory->GetAddress(offset, VK_WHOLE_SIZE);
+	if (*ppData == nullptr)
+		return VK_ERROR_MEMORY_MAP_FAILED;
+
 	return VK_SUCCESS;
 }
 
@@ -71,7 +75,7 @@ VKAPI_ATTR void VKAPI_CALL vkUnmapMemory(
 	VkDevice                                    device,
 	VkDeviceMemory                              memory)
 {
-
+	//do nothing.
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory(
@@ -90,7 +94,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory(
 	VkDeviceSize                                memoryOffset)
 {
 	
-	void* pData = memory->GetAddress(memoryOffset, image->_size);
+	void* pData = memory->GetAddress(memoryOffset, image->_totalsize);
 	if (pData == nullptr)
 		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
 
