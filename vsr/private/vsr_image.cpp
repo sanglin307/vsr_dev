@@ -27,7 +27,7 @@ VkImage_T::VkImage_T(VkImageType type,VkFormat format, VkExtent3D extent, uint32
 
 	_totalsize = 0;
 	_elementsize = 0;
-	_planesize = 0;
+	_layersize = 0;
 	if (VkImage_T::IsDepthStencilFormat(format))
 	{
 		assert(type == VK_IMAGE_TYPE_2D);
@@ -39,19 +39,19 @@ VkImage_T::VkImage_T(VkImageType type,VkFormat format, VkExtent3D extent, uint32
 	}
 	
 	if (type == VK_IMAGE_TYPE_1D)
-		_planesize = _elementsize * extent.width;
+		_layersize = _elementsize * extent.width;
 	else if (type == VK_IMAGE_TYPE_2D)
-		_planesize = _elementsize * extent.width * extent.height;
+		_layersize = _elementsize * extent.width * extent.height;
 	else if (type == VK_IMAGE_TYPE_3D)
-		_planesize = _elementsize * extent.width * extent.height * extent.depth;
+		_layersize = _elementsize * extent.width * extent.height * extent.depth;
 
 	if (_mipLevels > 1)
-		_planesize = _planesize * 3 / 2;
+		_layersize = _layersize * 3 / 2;
 
 	if (type != VK_IMAGE_TYPE_3D && _arrayLayers > 1)
-		_totalsize = _planesize * _arrayLayers;
+		_totalsize = _layersize * _arrayLayers;
 	else
-		_totalsize = _planesize;
+		_totalsize = _layersize;
 }
 
 VkImage_T::VkImage_T(const VkImageCreateInfo *pCreateInfo)
@@ -69,7 +69,7 @@ uint32_t VkImage_T::GetMipmapSize(uint32_t mipLevel)
 	auto width = _extent.width;
 	auto height = _extent.height;
 	auto depth = _extent.depth;
-	for (auto i = 0; i < mipLevel; i++)
+	for (uint32_t i = 0; i < mipLevel; i++)
 	{
 		if (width > 1)
 			width /= 2;
@@ -104,12 +104,12 @@ void VkImage_T::GetImageSubresourceLayout(VkDevice device, const VkImageSubresou
 			mipOffset += GetMipmapSize(i);
 		}
 	}
-	pLayout->offset = pSubresource->arrayLayer * _planesize + mipOffset;
+	pLayout->offset = pSubresource->arrayLayer * _layersize + mipOffset;
 	pLayout->size = GetMipmapSize(pSubresource->mipLevel);
 	pLayout->rowPitch = _extent.width;
-	pLayout->arrayPitch = _planesize;
+	pLayout->arrayPitch = _layersize;
 	if (_type == VK_IMAGE_TYPE_3D)
-		pLayout->depthPitch = _planesize;
+		pLayout->depthPitch = _layersize;
 }
 
 void VkImage_T::GetImageMemoryRequirements(VkDevice device,VkMemoryRequirements* pMemoryRequirements)

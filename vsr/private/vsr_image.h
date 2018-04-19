@@ -8,7 +8,7 @@ struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 
 	void GetImageMemoryRequirements(VkDevice device, VkMemoryRequirements* pMemoryRequirements);
 	void GetImageSubresourceLayout(VkDevice device, const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout);
-	void BindMemory(void* pData)
+	inline void BindMemory(void* pData)
 	{
 		_pData = pData;
 	}
@@ -32,7 +32,7 @@ struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 	VkImageTiling                    _tiling;
 
 	uint32_t                         _elementsize;    // size for element for image , = component size * component num
-	VkDeviceSize                     _planesize;      // size for one sub plane for image, including mipmap.
+	VkDeviceSize                     _layersize;      // size for one sub layer for image, including mipmap.
 	VkDeviceSize                     _totalsize;
 	void*                            _pData;
 };
