@@ -1,5 +1,23 @@
 #pragma once
 
+enum vkCommandType {
+	CT_CopyImage = 0,
+};
+
+struct vkCommandInterface {
+	//vkCommandType _type;
+	virtual void Excute() = 0;
+};
+
+struct vkCommand_CopyImage : public vkCommandInterface {
+	virtual void Excute();
+	VkImage                   _srcImage;
+	VkImageLayout             _srcImageLayout;
+	VkImage                   _dstImage;
+	VkImageLayout             _dstImageLayout;
+	std::vector<VkImageCopy>  _vecRegions;
+};
+
 enum vkCommandBufferState {
 	CBS_Init = 0,
 	CBS_Recording,
@@ -14,6 +32,7 @@ struct VkCommandBuffer_T {
 	{}
 	vkCommandBufferState _state;
 	VkCommandBufferLevel _level;
+	std::list<vkCommandInterface*> _listCommands;
 };
 
 struct VkCommandPool_T :  public MemoryAlloc<VkCommandPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {

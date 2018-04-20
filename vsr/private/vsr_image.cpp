@@ -26,17 +26,8 @@ VkImage_T::VkImage_T(VkImageType type,VkFormat format, VkExtent3D extent, uint32
 	}
 
 	_totalsize = 0;
-	_elementsize = 0;
 	_layersize = 0;
-	if (VkImage_T::IsDepthStencilFormat(format))
-	{
-		assert(type == VK_IMAGE_TYPE_2D);
-		_elementsize = VkImage_T::GetDepthStencilFormatSize(format);
-	}
-	else
-	{
-		_elementsize = VkImage_T::GetImageComponentNum(format) * VkImage_T::GetImageComponentSize(format);
-	}
+	_elementsize = GetImageElementSize(_format);
 	
 	if (type == VK_IMAGE_TYPE_1D)
 		_layersize = _elementsize * extent.width;
@@ -62,6 +53,25 @@ VkImage_T::VkImage_T(const VkImageCreateInfo *pCreateInfo)
 
 VkImage_T::~VkImage_T()
 {
+}
+
+uint32_t VkImage_T::GetMipmapOffset(uint32_t mipLevel)
+{
+	uint32_t mipOffset = 0;
+	if (mipLevel > 0)
+	{
+		for (uint32_t i = 0; i < mipLevel; i++)
+		{
+			mipOffset += GetMipmapSize(i);
+		}
+	}
+
+	return mipOffset;
+}
+
+uint32_t VkImage_T::GetTexelOffset(VkOffset3D& offset)
+{
+	return (_extent.width * _extent.height * offset.z + _extent.width * offset.y + offset.x) * GetImageElementSize(_format);
 }
 
 uint32_t VkImage_T::GetMipmapSize(uint32_t mipLevel)
@@ -96,14 +106,7 @@ void VkImage_T::GetImageSubresourceLayout(VkDevice device, const VkImageSubresou
 	if (pSubresource->mipLevel >= _mipLevels || pSubresource->arrayLayer >= _arrayLayers)
 		return;
 
-	uint32_t mipOffset = 0;
-	if (pSubresource->mipLevel > 0)
-	{
-		for (uint32_t i = 0; i < pSubresource->mipLevel; i++)
-		{
-			mipOffset += GetMipmapSize(i);
-		}
-	}
+	uint32_t mipOffset = GetMipmapOffset(pSubresource->mipLevel);
 	pLayout->offset = pSubresource->arrayLayer * _layersize + mipOffset;
 	pLayout->size = GetMipmapSize(pSubresource->mipLevel);
 	pLayout->rowPitch = _extent.width;
@@ -111,6 +114,8 @@ void VkImage_T::GetImageSubresourceLayout(VkDevice device, const VkImageSubresou
 	if (_type == VK_IMAGE_TYPE_3D)
 		pLayout->depthPitch = _layersize;
 }
+
+ 
 
 void VkImage_T::GetImageMemoryRequirements(VkDevice device,VkMemoryRequirements* pMemoryRequirements)
 {
@@ -143,6 +148,19 @@ void VkImage_T::GetImageMemoryRequirements(VkDevice device,VkMemoryRequirements*
 	
 	assert(0); // not find right memory type
 	return;
+}
+
+uint32_t VkImage_T::GetImageElementSize(VkFormat format)
+{
+	if (VkImage_T::IsDepthStencilFormat(format))
+	{
+		return VkImage_T::GetDepthStencilFormatSize(format);
+	}
+	else
+	{
+		return VkImage_T::GetImageComponentNum(format) * VkImage_T::GetImageComponentSize(format);
+	}
+	return 0;
 }
 
 uint32_t VkImage_T::GetImageComponentSize(VkFormat format)

@@ -1,6 +1,18 @@
 #include "vsr_common.h"
 #include "vsr_command.h"
+#include "vsr_image.h"
  
+void vkCommand_CopyImage::Excute()
+{
+	
+	for (size_t i = 0; i < _vecRegions.size(); i++)
+	{
+		void *pSrcData = (uint8_t*)(_srcImage->_pData) + _srcImage->GetTexelOffset(_vecRegions[i].srcOffset) + 
+			             _vecRegions[i].srcSubresource.baseArrayLayer * _srcImage->_layersize + 
+			             _srcImage->GetMipmapOffset(_vecRegions[i].srcSubresource.mipLevel);
+		//std::memcpy()
+	}
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 VkAllocationCallbacks *MemoryAlloc<VkCommandPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
@@ -120,7 +132,17 @@ VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage(
 	uint32_t                                    regionCount,
 	const VkImageCopy*                          pRegions)
 {
-
+	vkCommand_CopyImage *pCmd = new vkCommand_CopyImage;
+	pCmd->_srcImage = srcImage;
+	pCmd->_srcImageLayout = srcImageLayout;
+	pCmd->_dstImage = dstImage;
+	pCmd->_dstImageLayout = dstImageLayout;
+	for (size_t i = 0; i < regionCount; i++)
+	{
+		VkImageCopy c = { pRegions[i].srcSubresource,pRegions[i].srcOffset,pRegions[i].dstSubresource,pRegions[i].dstOffset, pRegions[i].extent };
+		pCmd->_vecRegions.push_back(c);
+	}
+	commandBuffer->_listCommands.push_back(pCmd);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdBindPipeline(

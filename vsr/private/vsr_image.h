@@ -14,7 +14,10 @@ struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 	}
 
 	uint32_t GetMipmapSize(uint32_t mipLevel);
+	uint32_t GetMipmapOffset(uint32_t mipLevel);
+	uint32_t GetTexelOffset(VkOffset3D& offset);
 
+	static uint32_t GetImageElementSize(VkFormat format);
 	static uint32_t GetImageComponentSize(VkFormat format);
 	static uint32_t GetImageComponentNum(VkFormat format);
 	static bool IsDepthStencilFormat(VkFormat format);
