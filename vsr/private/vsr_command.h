@@ -5,7 +5,6 @@ enum vkCommandType {
 };
 
 struct vkCommandInterface {
-	//vkCommandType _type;
 	virtual void Excute() = 0;
 };
 

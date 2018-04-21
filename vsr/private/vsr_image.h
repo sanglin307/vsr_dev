@@ -13,9 +13,11 @@ struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 		_pData = pData;
 	}
 
-	uint32_t GetMipmapSize(uint32_t mipLevel);
+	void* GetMemory(uint32_t layer, uint32_t mipLevel, VkOffset3D& offset);
+
+	uint32_t GetMipmapSize(uint32_t mipLevel, VkExtent3D* extent);
 	uint32_t GetMipmapOffset(uint32_t mipLevel);
-	uint32_t GetTexelOffset(VkOffset3D& offset);
+	uint32_t GetTexelOffset(uint32_t mipLevel, VkOffset3D& offset);
 
 	static uint32_t GetImageElementSize(VkFormat format);
 	static uint32_t GetImageComponentSize(VkFormat format);

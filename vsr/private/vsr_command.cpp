@@ -4,13 +4,21 @@
  
 void vkCommand_CopyImage::Excute()
 {
-	
 	for (size_t i = 0; i < _vecRegions.size(); i++)
 	{
-		void *pSrcData = (uint8_t*)(_srcImage->_pData) + _srcImage->GetTexelOffset(_vecRegions[i].srcOffset) + 
-			             _vecRegions[i].srcSubresource.baseArrayLayer * _srcImage->_layersize + 
-			             _srcImage->GetMipmapOffset(_vecRegions[i].srcSubresource.mipLevel);
-		//std::memcpy()
+		uint32_t layers = _vecRegions[i].srcSubresource.layerCount;
+		if(_srcImage->_type == VK_IMAGE_TYPE_3D && _dstImage->_type != VK_IMAGE_TYPE_3D)
+			layers = _vecRegions[i].dstSubresource.layerCount;
+
+		for (uint32_t i = 0; i < layers; i++)
+		{
+			void *pSrcData = _srcImage->GetMemory(_vecRegions[i].srcSubresource.baseArrayLayer + i, _vecRegions[i].srcSubresource.mipLevel, _vecRegions[i].srcOffset);
+			void *pDstData = _dstImage->GetMemory(_vecRegions[i].dstSubresource.baseArrayLayer + i, _vecRegions[i].dstSubresource.mipLevel, _vecRegions[i].dstOffset);
+			uint32_t size = _vecRegions[i].extent.width * _vecRegions[i].extent.height * _vecRegions[i].extent.depth * _srcImage->_elementsize;
+			std::memcpy(pDstData, pSrcData, size);
+		}
+		
+
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

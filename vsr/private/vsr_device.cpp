@@ -38,6 +38,13 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 	_dispatchTable["vkGetImageSubresourceLayout"] = (PFN_vkVoidFunction)vkGetImageSubresourceLayout;
 	_dispatchTable["vkCreateImageView"] = (PFN_vkVoidFunction)vkCreateImageView;
 	_dispatchTable["vkDestroyImageView"] = (PFN_vkVoidFunction)vkDestroyImageView;
+	_dispatchTable["vkCmdCopyImage"] = (PFN_vkVoidFunction)vkCmdCopyImage;
+	_dispatchTable["vkCreateSampler"] = (PFN_vkVoidFunction)vkCreateSampler;
+	_dispatchTable["vkDestroySampler"] = (PFN_vkVoidFunction)vkDestroySampler;
+	_dispatchTable["vkCreateBuffer"] = (PFN_vkVoidFunction)vkCreateBuffer;
+	_dispatchTable["vkDestroyBuffer"] = (PFN_vkVoidFunction)vkDestroyBuffer;
+	_dispatchTable["vkGetBufferMemoryRequirements"] = (PFN_vkVoidFunction)vkGetBufferMemoryRequirements;
+	
 	
 	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;
 	_dispatchTable["vkDestroySwapchainKHR"] = (PFN_vkVoidFunction)vkDestroySwapchainKHR;

@@ -55,6 +55,21 @@ VkImage_T::~VkImage_T()
 {
 }
 
+void* VkImage_T::GetMemory(uint32_t layer, uint32_t mipLevel, VkOffset3D& offset)
+{
+	assert(_pData != nullptr);
+	if (_type != VK_IMAGE_TYPE_3D)
+	{
+		return (uint8_t*)_pData + GetTexelOffset(mipLevel,offset) + layer * _layersize + GetMipmapOffset(mipLevel);
+	}
+	else  // for 3D image, convert layer to depth offset
+	{
+		VkExtent3D extent = { 0 };
+		GetMipmapSize(mipLevel, &extent);
+	    return (uint8_t*)_pData + GetTexelOffset(mipLevel,offset) + layer * extent.height * extent.width * _elementsize + GetMipmapOffset(mipLevel);
+	}
+}
+
 uint32_t VkImage_T::GetMipmapOffset(uint32_t mipLevel)
 {
 	uint32_t mipOffset = 0;
@@ -62,19 +77,21 @@ uint32_t VkImage_T::GetMipmapOffset(uint32_t mipLevel)
 	{
 		for (uint32_t i = 0; i < mipLevel; i++)
 		{
-			mipOffset += GetMipmapSize(i);
+			mipOffset += GetMipmapSize(i,nullptr);
 		}
 	}
 
 	return mipOffset;
 }
 
-uint32_t VkImage_T::GetTexelOffset(VkOffset3D& offset)
+uint32_t VkImage_T::GetTexelOffset(uint32_t mipLevel,VkOffset3D& offset)
 {
-	return (_extent.width * _extent.height * offset.z + _extent.width * offset.y + offset.x) * GetImageElementSize(_format);
+	VkExtent3D extent = { 0 };
+	GetMipmapSize(mipLevel, &extent);
+	return (extent.width * extent.height * offset.z + extent.width * offset.y + offset.x) * _elementsize;
 }
 
-uint32_t VkImage_T::GetMipmapSize(uint32_t mipLevel)
+uint32_t VkImage_T::GetMipmapSize(uint32_t mipLevel,VkExtent3D* extent)
 {
 	auto width = _extent.width;
 	auto height = _extent.height;
@@ -87,6 +104,13 @@ uint32_t VkImage_T::GetMipmapSize(uint32_t mipLevel)
 			height /= 2;
 		if (depth > 1 && _type == VK_IMAGE_TYPE_3D)
 			depth /= 2;
+	}
+
+	if (extent != nullptr)
+	{
+		extent->width = width;
+		extent->height = height;
+		extent->depth = depth;
 	}
 	
 	if (_type == VK_IMAGE_TYPE_1D)
@@ -108,7 +132,7 @@ void VkImage_T::GetImageSubresourceLayout(VkDevice device, const VkImageSubresou
 
 	uint32_t mipOffset = GetMipmapOffset(pSubresource->mipLevel);
 	pLayout->offset = pSubresource->arrayLayer * _layersize + mipOffset;
-	pLayout->size = GetMipmapSize(pSubresource->mipLevel);
+	pLayout->size = GetMipmapSize(pSubresource->mipLevel,nullptr);
 	pLayout->rowPitch = _extent.width;
 	pLayout->arrayPitch = _layersize;
 	if (_type == VK_IMAGE_TYPE_3D)
@@ -138,11 +162,7 @@ void VkImage_T::GetImageMemoryRequirements(VkDevice device,VkMemoryRequirements*
 	{
 		for (uint32_t i = 0; i < prop.memoryTypeCount; i++)
 		{
-			if (prop.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
-			{
-				pMemoryRequirements->memoryTypeBits = 1 << i;
-				return;
-			}
+			pMemoryRequirements->memoryTypeBits |= 1 << i;			
 		}
 	}
 	
