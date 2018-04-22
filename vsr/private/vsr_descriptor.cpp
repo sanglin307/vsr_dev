@@ -53,7 +53,11 @@ VkAllocationCallbacks *MemoryAlloc<VkDescriptorSetLayout_T, VK_SYSTEM_ALLOCATION
 
 VkDescriptorSetLayout_T::VkDescriptorSetLayout_T(const VkDescriptorSetLayoutCreateInfo* pCreateInfo)
 {
-
+	for (uint32_t i = 0; i < pCreateInfo->bindingCount; i++)
+	{
+		_vecBindings.push_back(pCreateInfo->pBindings[i]);
+	}
+	
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(
@@ -62,6 +66,15 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(
 	const VkAllocationCallbacks*                pAllocator,
 	VkDescriptorSetLayout*                      pSetLayout)
 {
+	try
+	{
+		*pSetLayout = new(pAllocator) VkDescriptorSetLayout_T(pCreateInfo);
+	}
+	catch (...)
+	{
+		return VK_ERROR_OUT_OF_HOST_MEMORY;
+	}
+
 	return VK_SUCCESS;
 }
 
@@ -69,7 +82,9 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDescriptorSetLayout(
 	VkDevice                                    device,
 	VkDescriptorSetLayout                       descriptorSetLayout,
 	const VkAllocationCallbacks*                pAllocator)
-{}
+{
+	delete descriptorSetLayout;
+}
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorPool(
 	VkDevice                                    device,
@@ -119,13 +134,3 @@ VKAPI_ATTR void VKAPI_CALL vkUpdateDescriptorSets(
 	const VkCopyDescriptorSet*                  pDescriptorCopies)
 {}
 
-VKAPI_ATTR void VKAPI_CALL vkCmdBindDescriptorSets(
-	VkCommandBuffer                             commandBuffer,
-	VkPipelineBindPoint                         pipelineBindPoint,
-	VkPipelineLayout                            layout,
-	uint32_t                                    firstSet,
-	uint32_t                                    descriptorSetCount,
-	const VkDescriptorSet*                      pDescriptorSets,
-	uint32_t                                    dynamicOffsetCount,
-	const uint32_t*                             pDynamicOffsets)
-{}

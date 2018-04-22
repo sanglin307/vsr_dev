@@ -44,6 +44,19 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 	_dispatchTable["vkCreateBuffer"] = (PFN_vkVoidFunction)vkCreateBuffer;
 	_dispatchTable["vkDestroyBuffer"] = (PFN_vkVoidFunction)vkDestroyBuffer;
 	_dispatchTable["vkGetBufferMemoryRequirements"] = (PFN_vkVoidFunction)vkGetBufferMemoryRequirements;
+	_dispatchTable["vkCreateDescriptorSetLayout"] = (PFN_vkVoidFunction)vkCreateDescriptorSetLayout;
+	_dispatchTable["vkDestroyDescriptorSetLayout"] = (PFN_vkVoidFunction)vkDestroyDescriptorSetLayout;
+	_dispatchTable["vkCreateDescriptorPool"] = (PFN_vkVoidFunction)vkCreateDescriptorPool;
+	_dispatchTable["vkDestroyDescriptorPool"] = (PFN_vkVoidFunction)vkDestroyDescriptorPool;
+	_dispatchTable["vkResetDescriptorPool"] = (PFN_vkVoidFunction)vkResetDescriptorPool;
+	_dispatchTable["vkAllocateDescriptorSets"] = (PFN_vkVoidFunction)vkAllocateDescriptorSets;
+	_dispatchTable["vkFreeDescriptorSets"] = (PFN_vkVoidFunction)vkFreeDescriptorSets;
+	_dispatchTable["vkUpdateDescriptorSets"] = (PFN_vkVoidFunction)vkUpdateDescriptorSets;
+	_dispatchTable["vkCmdBindDescriptorSets"] = (PFN_vkVoidFunction)vkCmdBindDescriptorSets;
+	_dispatchTable["vkCreatePipelineLayout"] = (PFN_vkVoidFunction)vkCreatePipelineLayout;
+	_dispatchTable["vkDestroyPipelineLayout"] = (PFN_vkVoidFunction)vkDestroyPipelineLayout;
+	_dispatchTable["vkDestroyPipeline"] = (PFN_vkVoidFunction)vkDestroyPipeline;
+	
 	
 	
 	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;

@@ -1,4 +1,19 @@
 #include "vsr_common.h"
+#include "vsr_pipeline.h"
+
+VkAllocationCallbacks *MemoryAlloc<VkPipelineLayout_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
+VkPipelineLayout_T::VkPipelineLayout_T(VkDevice device, const VkPipelineLayoutCreateInfo* pCreateInfo)
+{
+	for (uint32_t i = 0; i < pCreateInfo->setLayoutCount; i++)
+	{
+		_vecSetLayouts.push_back(pCreateInfo->pSetLayouts[i]);
+	}
+
+	for (uint32_t i = 0; i < pCreateInfo->pushConstantRangeCount; i++)
+	{
+		_vecPushConstantRanges.push_back(pCreateInfo->pPushConstantRanges[i]);
+	}
+}
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineCache(
 	VkDevice                                    device,
@@ -67,6 +82,15 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(
 	const VkAllocationCallbacks*                pAllocator,
 	VkPipelineLayout*                           pPipelineLayout)
 {
+	try
+	{
+		*pPipelineLayout = new(pAllocator) VkPipelineLayout_T(device,pCreateInfo);
+	}
+	catch (...)
+	{
+		return VK_ERROR_OUT_OF_HOST_MEMORY;
+	}
+
 	return VK_SUCCESS;
 }
 
@@ -74,5 +98,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineLayout(
 	VkDevice                                    device,
 	VkPipelineLayout                            pipelineLayout,
 	const VkAllocationCallbacks*                pAllocator)
-{}
+{
+	delete pipelineLayout;
+}
 

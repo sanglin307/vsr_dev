@@ -23,4 +23,5 @@ struct VkSampler_T : public MemoryAlloc<VkSampler_T, VK_SYSTEM_ALLOCATION_SCOPE_
 
 struct VkDescriptorSetLayout_T : public MemoryAlloc<VkDescriptorSetLayout_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkDescriptorSetLayout_T(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
+	std::vector<VkDescriptorSetLayoutBinding> _vecBindings;
 };

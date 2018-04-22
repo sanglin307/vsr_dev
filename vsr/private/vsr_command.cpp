@@ -185,6 +185,17 @@ VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBias(
 	float                                       depthBiasSlopeFactor)
 {}
 
+VKAPI_ATTR void VKAPI_CALL vkCmdBindDescriptorSets(
+	VkCommandBuffer                             commandBuffer,
+	VkPipelineBindPoint                         pipelineBindPoint,
+	VkPipelineLayout                            layout,
+	uint32_t                                    firstSet,
+	uint32_t                                    descriptorSetCount,
+	const VkDescriptorSet*                      pDescriptorSets,
+	uint32_t                                    dynamicOffsetCount,
+	const uint32_t*                             pDynamicOffsets)
+{}
+
 VKAPI_ATTR void VKAPI_CALL vkCmdSetBlendConstants(
 	VkCommandBuffer                             commandBuffer,
 	const float                                 blendConstants[4])
