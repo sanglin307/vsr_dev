@@ -56,8 +56,17 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 	_dispatchTable["vkCreatePipelineLayout"] = (PFN_vkVoidFunction)vkCreatePipelineLayout;
 	_dispatchTable["vkDestroyPipelineLayout"] = (PFN_vkVoidFunction)vkDestroyPipelineLayout;
 	_dispatchTable["vkDestroyPipeline"] = (PFN_vkVoidFunction)vkDestroyPipeline;
-	
-	
+	_dispatchTable["vkCreateComputePipelines"] = (PFN_vkVoidFunction)vkCreateComputePipelines;
+	_dispatchTable["vkCreateGraphicsPipelines"] = (PFN_vkVoidFunction)vkCreateGraphicsPipelines;
+	_dispatchTable["vkMergePipelineCaches"] = (PFN_vkVoidFunction)vkMergePipelineCaches;
+	_dispatchTable["vkGetPipelineCacheData"] = (PFN_vkVoidFunction)vkGetPipelineCacheData;
+	_dispatchTable["vkDestroyPipelineCache"] = (PFN_vkVoidFunction)vkDestroyPipelineCache;
+	_dispatchTable["vkCreatePipelineCache"] = (PFN_vkVoidFunction)vkCreatePipelineCache;
+
+	_dispatchTable["vkCreateRenderPass"] = (PFN_vkVoidFunction)vkCreateRenderPass;
+	_dispatchTable["vkDestroyRenderPass"] = (PFN_vkVoidFunction)vkDestroyRenderPass;
+	_dispatchTable["vkCreateFramebuffer"] = (PFN_vkVoidFunction)vkCreateFramebuffer;
+	_dispatchTable["vkDestroyFramebuffer"] = (PFN_vkVoidFunction)vkDestroyFramebuffer;
 	
 	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;
 	_dispatchTable["vkDestroySwapchainKHR"] = (PFN_vkVoidFunction)vkDestroySwapchainKHR;
