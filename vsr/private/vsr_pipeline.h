@@ -13,5 +13,5 @@ struct VkPipelineCache_T : public MemoryAlloc<VkPipelineCache_T, VK_SYSTEM_ALLOC
 };
 
 struct VkPipeline_T : public MemoryAlloc<VkPipeline_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
-
+	VkPipeline_T(VkDevice device,const VkGraphicsPipelineCreateInfo* pCreateInfos);
 };
