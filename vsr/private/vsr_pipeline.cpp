@@ -89,6 +89,130 @@ VKAPI_ATTR VkResult VKAPI_CALL vkMergePipelineCaches(
 VkAllocationCallbacks *MemoryAlloc<VkPipeline_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkPipeline_T::VkPipeline_T(VkDevice device,const VkGraphicsPipelineCreateInfo* pCreateInfos)
 {
+	/*const VkPipelineDynamicStateCreateInfo*          pDynamicState;
+	VkPipelineLayout                                 layout;
+	VkRenderPass                                     renderPass;
+	uint32_t                                         subpass;*/
+	_flags = pCreateInfos->flags;
+	assert(pCreateInfos->stageCount > 0);
+	for (uint32_t i = 0; i < pCreateInfos->stageCount; i++)
+	{
+		vkShaderStage ss;
+		ss._stage = pCreateInfos->pStages[i].stage;
+		ss._module = pCreateInfos->pStages[i].module;
+		assert(std::strlen(pCreateInfos->pStages[i].pName) < VK_ShaderStageNameLength);
+		std::strncpy(ss._name, pCreateInfos->pStages[i].pName, VK_ShaderStageNameLength);
+		for (uint32_t j = 0; j < pCreateInfos->pStages[i].pSpecializationInfo->mapEntryCount; j++)
+		{
+			ss._vecMapEntries.push_back(pCreateInfos->pStages[i].pSpecializationInfo->pMapEntries[j]);
+		}
+		ss.dataSize = pCreateInfos->pStages[i].pSpecializationInfo->dataSize;
+		ss.pData = pCreateInfos->pStages[i].pSpecializationInfo->pData;
+
+		_vecStages.push_back(ss);
+	}
+
+	assert(pCreateInfos->pVertexInputState->vertexBindingDescriptionCount > 0);
+	assert(pCreateInfos->pVertexInputState->vertexAttributeDescriptionCount > 0);
+	for (uint32_t i = 0; i < pCreateInfos->pVertexInputState->vertexBindingDescriptionCount; i++)
+	{
+		_vecVertexBindingDescriptions.push_back(pCreateInfos->pVertexInputState->pVertexBindingDescriptions[i]);
+	}
+	for (uint32_t i = 0; i < pCreateInfos->pVertexInputState->vertexAttributeDescriptionCount; i++)
+	{
+		_vecVertexAttributeDescriptions.push_back(pCreateInfos->pVertexInputState->pVertexAttributeDescriptions[i]);
+	}
+	_topology = pCreateInfos->pInputAssemblyState->topology;
+	_primitiveRestartEnable = pCreateInfos->pInputAssemblyState->primitiveRestartEnable;
+
+	if(pCreateInfos->pTessellationState != nullptr)
+	   _patchControlPoints = pCreateInfos->pTessellationState->patchControlPoints;
+
+	if (pCreateInfos->pViewportState != nullptr)
+	{
+		for (uint32_t i = 0; i < pCreateInfos->pViewportState->scissorCount; i++)
+		{
+			_vecScissors.push_back(pCreateInfos->pViewportState->pScissors[i]);
+		}
+		for (uint32_t i = 0; i < pCreateInfos->pViewportState->viewportCount; i++)
+		{
+			_vecViewports.push_back(pCreateInfos->pViewportState->pViewports[i]);
+		}
+	}
+
+	assert(pCreateInfos->pRasterizationState != nullptr); 
+	_depthClampEnable = pCreateInfos->pRasterizationState->depthClampEnable;
+	_rasterizerDiscardEnable = pCreateInfos->pRasterizationState->rasterizerDiscardEnable;
+	_polygonMode = pCreateInfos->pRasterizationState->polygonMode;
+	_cullMode = pCreateInfos->pRasterizationState->cullMode;
+	_frontFace = pCreateInfos->pRasterizationState->frontFace;
+	_depthBiasEnable = pCreateInfos->pRasterizationState->depthBiasEnable;
+	_depthBiasConstantFactor = pCreateInfos->pRasterizationState->depthBiasConstantFactor;
+	_depthBiasClamp = pCreateInfos->pRasterizationState->depthBiasClamp;
+	_depthBiasSlopeFactor = pCreateInfos->pRasterizationState->depthBiasSlopeFactor;
+	_lineWidth = pCreateInfos->pRasterizationState->lineWidth;
+	 
+	if (pCreateInfos->pMultisampleState != nullptr)
+	{
+		_rasterizationSamples = pCreateInfos->pMultisampleState->rasterizationSamples;
+		_sampleShadingEnable = pCreateInfos->pMultisampleState->sampleShadingEnable;
+		_minSampleShading = pCreateInfos->pMultisampleState->minSampleShading;
+		_alphaToCoverageEnable = pCreateInfos->pMultisampleState->alphaToCoverageEnable;
+		_alphaToOneEnable = pCreateInfos->pMultisampleState->alphaToOneEnable;
+	}
+	else
+	{
+		_rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		_sampleShadingEnable = false;
+		_minSampleShading = 0.f;
+		_alphaToCoverageEnable = false;
+		_alphaToOneEnable = false;
+	}
+
+	if (pCreateInfos->pDepthStencilState != nullptr)
+	{
+		_depthTestEnable = pCreateInfos->pDepthStencilState->depthTestEnable;
+		_depthWriteEnable = pCreateInfos->pDepthStencilState->depthWriteEnable;
+		_depthCompareOp = pCreateInfos->pDepthStencilState->depthCompareOp;
+		_depthBoundsTestEnable = pCreateInfos->pDepthStencilState->depthBoundsTestEnable;
+		_stencilTestEnable = pCreateInfos->pDepthStencilState->stencilTestEnable;
+		_front = pCreateInfos->pDepthStencilState->front;
+		_back = pCreateInfos->pDepthStencilState->back;
+		_minDepthBounds = pCreateInfos->pDepthStencilState->minDepthBounds;
+		_maxDepthBounds = pCreateInfos->pDepthStencilState->maxDepthBounds;
+	}
+	else
+	{
+		_depthTestEnable = false;
+		_depthWriteEnable = false;
+		_depthCompareOp = VK_COMPARE_OP_NEVER;
+		_depthBoundsTestEnable = false;
+		_stencilTestEnable = false;
+		std::memset(&_front, 0, sizeof(_front));  
+		std::memset(&_back, 0, sizeof(_back));
+		_minDepthBounds = 0.f;
+		_maxDepthBounds = 0.f;
+	}
+
+	if (pCreateInfos->pColorBlendState != nullptr)
+	{
+		_blendLogicOpEnable = pCreateInfos->pColorBlendState->logicOpEnable;
+		_blendLogicOp = pCreateInfos->pColorBlendState->logicOp;
+		for (uint32_t i = 0; i < pCreateInfos->pColorBlendState->attachmentCount; i++)
+		{
+			_vecBlendAttachments.push_back(pCreateInfos->pColorBlendState->pAttachments[i]);
+		}
+		std::memcpy(_blendConstants, pCreateInfos->pColorBlendState->blendConstants,sizeof(_blendConstants));
+	}
+	else
+	{
+		_blendLogicOpEnable = false;
+		_blendLogicOp = VK_LOGIC_OP_CLEAR;
+		std::memset(_blendConstants, 0, sizeof(_blendConstants));
+	}
+
+
+
 
 }
 
