@@ -15,11 +15,11 @@ struct VkPipelineCache_T : public MemoryAlloc<VkPipelineCache_T, VK_SYSTEM_ALLOC
 #define VK_ShaderStageNameLength    64  
 struct vkShaderStage {
 	VkShaderStageFlagBits               _stage;
-	VkShaderModule                      _module;
-	char                               _name[VK_ShaderStageNameLength];
+	std::vector<uint32_t>               _code;
+	char                                _name[VK_ShaderStageNameLength];
 	std::vector<VkSpecializationMapEntry>  _vecMapEntries;
-	size_t                             dataSize;
-	const void*                        pData;
+	size_t                             _dataSize;
+	const void*                        _pData;
 };
 
 struct VkPipeline_T : public MemoryAlloc<VkPipeline_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {

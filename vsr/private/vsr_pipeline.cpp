@@ -1,6 +1,7 @@
 #include "vsr_common.h"
 #include "vsr_pipeline.h"
 #include "vsr_device.h"
+#include "vsr_shadermodule.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkPipelineLayout_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkPipelineLayout_T::VkPipelineLayout_T(VkDevice device, const VkPipelineLayoutCreateInfo* pCreateInfo)
@@ -89,25 +90,25 @@ VKAPI_ATTR VkResult VKAPI_CALL vkMergePipelineCaches(
 VkAllocationCallbacks *MemoryAlloc<VkPipeline_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkPipeline_T::VkPipeline_T(VkDevice device,const VkGraphicsPipelineCreateInfo* pCreateInfos)
 {
-	/*const VkPipelineDynamicStateCreateInfo*          pDynamicState;
-	VkPipelineLayout                                 layout;
-	VkRenderPass                                     renderPass;
-	uint32_t                                         subpass;*/
 	_flags = pCreateInfos->flags;
+	_layout = pCreateInfos->layout;
+	_renderPass = pCreateInfos->renderPass;
+	_subpass = pCreateInfos->subpass;
+
 	assert(pCreateInfos->stageCount > 0);
 	for (uint32_t i = 0; i < pCreateInfos->stageCount; i++)
 	{
 		vkShaderStage ss;
 		ss._stage = pCreateInfos->pStages[i].stage;
-		ss._module = pCreateInfos->pStages[i].module;
+		ss._code = pCreateInfos->pStages[i].module->_vecCodes;
 		assert(std::strlen(pCreateInfos->pStages[i].pName) < VK_ShaderStageNameLength);
 		std::strncpy(ss._name, pCreateInfos->pStages[i].pName, VK_ShaderStageNameLength);
 		for (uint32_t j = 0; j < pCreateInfos->pStages[i].pSpecializationInfo->mapEntryCount; j++)
 		{
 			ss._vecMapEntries.push_back(pCreateInfos->pStages[i].pSpecializationInfo->pMapEntries[j]);
 		}
-		ss.dataSize = pCreateInfos->pStages[i].pSpecializationInfo->dataSize;
-		ss.pData = pCreateInfos->pStages[i].pSpecializationInfo->pData;
+		ss._dataSize = pCreateInfos->pStages[i].pSpecializationInfo->dataSize;
+		ss._pData = pCreateInfos->pStages[i].pSpecializationInfo->pData;
 
 		_vecStages.push_back(ss);
 	}
@@ -211,9 +212,13 @@ VkPipeline_T::VkPipeline_T(VkDevice device,const VkGraphicsPipelineCreateInfo* p
 		std::memset(_blendConstants, 0, sizeof(_blendConstants));
 	}
 
-
-
-
+	if (pCreateInfos->pDynamicState != nullptr)
+	{
+		for (uint32_t i = 0; i < pCreateInfos->pDynamicState->dynamicStateCount; i++)
+		{
+			_vecDynamicStates.push_back(pCreateInfos->pDynamicState->pDynamicStates[i]);
+		}
+	}
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(
