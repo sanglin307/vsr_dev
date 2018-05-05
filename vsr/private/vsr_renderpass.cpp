@@ -20,20 +20,7 @@ VkRenderPass_T::VkRenderPass_T(const VkRenderPassCreateInfo* pCreateInfo)
 	}
 }
 
-VKAPI_ATTR VkResult VKAPI_CALL vkCreateFramebuffer(
-	VkDevice                                    device,
-	const VkFramebufferCreateInfo*              pCreateInfo,
-	const VkAllocationCallbacks*                pAllocator,
-	VkFramebuffer*                              pFramebuffer)
-{
-	return VK_SUCCESS;
-}
 
-VKAPI_ATTR void VKAPI_CALL vkDestroyFramebuffer(
-	VkDevice                                    device,
-	VkFramebuffer                               framebuffer,
-	const VkAllocationCallbacks*                pAllocator)
-{}
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(
 	VkDevice                                    device,

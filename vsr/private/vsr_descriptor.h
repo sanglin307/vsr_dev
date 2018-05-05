@@ -39,9 +39,37 @@ struct VkDescriptorPool_T : public MemoryAlloc<VkDescriptorPool_T, VK_SYSTEM_ALL
 	std::list<VkDescriptorSet>      _descriptors;
 };
 
+struct vkImageSamplerPack {
+	VkSampler  _sampler;
+	VkImageView _imageView;
+};
+
+union vkDescriptorDataType {
+	vkImageSamplerPack _imageSampler;
+	VkBufferView _bufferTexView;
+	void*  _buffer;
+};
+
+struct vkDescriptorObject {
+	~vkDescriptorObject()
+	{
+		if (_pData != nullptr)
+		{
+			std::free(_pData);
+			_pData = nullptr;
+		}
+	}
+
+	uint32_t               _binding;
+	VkDescriptorType       _descriptorType;
+	vkDescriptorDataType*  _pData;
+	uint32_t               _count;
+	
+};
+
 struct VkDescriptorSet_T  {
 	VkDescriptorSet_T(VkDescriptorPool pool, VkDescriptorSetLayout layout);
-
-	VkDescriptorPool             _pool;
-	VkDescriptorSetLayout        _layout;
+	void Write(const VkWriteDescriptorSet* pWriteInfo);
+	void Copy(const VkCopyDescriptorSet* pCopyInfo);
+	std::vector<vkDescriptorObject> _vecDescriptors;
 };

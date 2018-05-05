@@ -132,6 +132,7 @@
     <ClInclude Include="private\vsr_common.h" />
     <ClInclude Include="private\vsr_descriptor.h" />
     <ClInclude Include="private\vsr_device.h" />
+    <ClInclude Include="private\vsr_framebuffer.h" />
     <ClInclude Include="private\vsr_image.h" />
     <ClInclude Include="private\vsr_instance.h" />
     <ClInclude Include="private\vsr_memory.h" />
@@ -154,6 +155,7 @@
     <ClCompile Include="private\vsr_command.cpp" />
     <ClCompile Include="private\vsr_descriptor.cpp" />
     <ClCompile Include="private\vsr_device.cpp" />
+    <ClCompile Include="private\vsr_framebuffer.cpp" />
     <ClCompile Include="private\vsr_image.cpp" />
     <ClCompile Include="private\vsr_instance.cpp" />
     <ClCompile Include="private\vsr_memory.cpp" />

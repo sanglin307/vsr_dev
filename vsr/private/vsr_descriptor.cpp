@@ -1,5 +1,6 @@
 #include "vsr_common.h"
 #include "vsr_descriptor.h"
+#include "vsr_buffer.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkSampler_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 
@@ -177,8 +178,107 @@ VKAPI_ATTR VkResult VKAPI_CALL vkResetDescriptorPool(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 VkDescriptorSet_T::VkDescriptorSet_T(VkDescriptorPool pool, VkDescriptorSetLayout layout)
 {
-	_pool = pool;
-	_layout = layout;
+	for (uint32_t i = 0; i < layout->_vecBindings.size(); i++)
+	{
+		vkDescriptorObject obj;
+		obj._binding = layout->_vecBindings[i].binding;
+		obj._descriptorType = layout->_vecBindings[i].descriptorType;
+		obj._count = layout->_vecBindings[i].descriptorCount;
+		obj._pData = (vkDescriptorDataType*)std::malloc(obj._count * sizeof(vkDescriptorDataType));
+		std::memset(obj._pData, 0, sizeof(vkDescriptorDataType)*obj._count);
+		if (obj._descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER || 
+			obj._descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+		{
+			if (layout->_vecBindings[i].pImmutableSamplers != nullptr)
+			{
+				for (uint32_t j = 0; j < layout->_vecBindings[i].descriptorCount; j++)
+					obj._pData[j]._imageSampler._sampler = layout->_vecBindings[i].pImmutableSamplers[j];
+			}
+		}
+		_vecDescriptors.push_back(obj);
+	}
+}
+
+void VkDescriptorSet_T::Copy(const VkCopyDescriptorSet* pCopyInfo)
+{
+	vkDescriptorObject *pSrc = nullptr;
+	vkDescriptorObject *pDst = nullptr;
+	for (uint32_t j = 0; j < pCopyInfo->srcSet->_vecDescriptors.size(); j++)
+	{
+		if (pCopyInfo->srcSet->_vecDescriptors[j]._binding == pCopyInfo->srcBinding)
+		{
+			pSrc = &pCopyInfo->srcSet->_vecDescriptors[j];
+			break;
+		}
+	}
+	for (uint32_t j = 0; j < _vecDescriptors.size(); j++)
+	{
+		if (_vecDescriptors[j]._binding == pCopyInfo->dstBinding)
+		{
+			pDst = &_vecDescriptors[j];
+			break;
+		}
+	}
+
+	assert(pSrc != nullptr && pDst != nullptr);
+	assert(pSrc->_descriptorType == pDst->_descriptorType);
+	for (uint32_t j = 0; j < pCopyInfo->descriptorCount; j++)
+	{
+		if (pCopyInfo->srcArrayElement + j >= pSrc->_count)
+			continue;
+		if (pCopyInfo->dstArrayElement + j >= pDst->_count)
+			continue;
+
+		pDst->_pData[pCopyInfo->dstArrayElement + j] = pSrc->_pData[pCopyInfo->srcArrayElement + j];
+	}
+	 
+}
+
+void VkDescriptorSet_T::Write(const VkWriteDescriptorSet* pWriteInfo)
+{
+	for (auto& v : _vecDescriptors)
+	{
+		if (v._binding == pWriteInfo->dstBinding)
+		{
+			assert(v._descriptorType == pWriteInfo->descriptorType);
+			if (v._descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER || v._descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				for (uint32_t i = pWriteInfo->dstArrayElement; i < pWriteInfo->dstArrayElement + pWriteInfo->descriptorCount && i < v._count; i++)
+				{
+					v._pData[i]._imageSampler._sampler = pWriteInfo->pImageInfo[i].sampler;
+				}
+			}
+
+			if (v._descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT)
+			{
+				for (uint32_t i = pWriteInfo->dstArrayElement; i < pWriteInfo->dstArrayElement + pWriteInfo->descriptorCount && i < v._count; i++)
+				{
+					v._pData[i]._imageSampler._imageView = pWriteInfo->pImageInfo[i].imageView;
+				}
+			} else if (v._descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER)
+			{
+				for (uint32_t i = pWriteInfo->dstArrayElement; i < pWriteInfo->dstArrayElement + pWriteInfo->descriptorCount && i < v._count; i++)
+					v._pData[i]._bufferTexView = pWriteInfo->pTexelBufferView[i];
+			} else if (v._descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
+				v._descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
+			{
+				for (uint32_t i = pWriteInfo->dstArrayElement; i < pWriteInfo->dstArrayElement + pWriteInfo->descriptorCount && i < v._count; i++)
+				{
+					v._pData[i]._buffer = (uint8_t*)pWriteInfo->pBufferInfo[i].buffer->_pData + pWriteInfo->pBufferInfo[i].offset;
+				}
+			}
+			return;
+		}
+	}
+
+	// not found£¡
+	assert(0);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkAllocateDescriptorSets(
@@ -204,5 +304,15 @@ VKAPI_ATTR void VKAPI_CALL vkUpdateDescriptorSets(
 	const VkWriteDescriptorSet*                 pDescriptorWrites,
 	uint32_t                                    descriptorCopyCount,
 	const VkCopyDescriptorSet*                  pDescriptorCopies)
-{}
+{
+	for (uint32_t i = 0; i < descriptorWriteCount; i++)
+	{
+		pDescriptorWrites[i].dstSet->Write(&pDescriptorWrites[i]);
+	}
+
+	for (uint32_t i = 0; i < descriptorCopyCount; i++)
+	{
+		pDescriptorCopies[i].dstSet->Copy(&pDescriptorCopies[i]);
+	}
+}
 
