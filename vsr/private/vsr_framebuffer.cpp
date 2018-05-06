@@ -3,8 +3,12 @@
 
 VkAllocationCallbacks *MemoryAlloc<VkFramebuffer_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkFramebuffer_T::VkFramebuffer_T(const VkFramebufferCreateInfo*   pCreateInfo)
+	:_renderPass(pCreateInfo->renderPass),_width(pCreateInfo->width),_height(pCreateInfo->height),_layers(pCreateInfo->layers)
 {
-
+	for (uint32_t i = 0; i < pCreateInfo->attachmentCount; i++)
+	{
+		_vecAttachments.push_back(pCreateInfo->pAttachments[i]);
+	}
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateFramebuffer(
