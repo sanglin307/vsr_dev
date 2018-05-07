@@ -67,6 +67,12 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 	_dispatchTable["vkDestroyRenderPass"] = (PFN_vkVoidFunction)vkDestroyRenderPass;
 	_dispatchTable["vkCreateFramebuffer"] = (PFN_vkVoidFunction)vkCreateFramebuffer;
 	_dispatchTable["vkDestroyFramebuffer"] = (PFN_vkVoidFunction)vkDestroyFramebuffer;
+
+	_dispatchTable["vkCmdBindPipeline"] = (PFN_vkVoidFunction)vkCmdBindPipeline;
+	_dispatchTable["vkCmdCopyImage"] = (PFN_vkVoidFunction)vkCmdCopyImage;
+	_dispatchTable["vkCmdBeginRenderPass"] = (PFN_vkVoidFunction)vkCmdBeginRenderPass;
+	_dispatchTable["vkCmdNextSubpass"] = (PFN_vkVoidFunction)vkCmdNextSubpass;
+	_dispatchTable["vkCmdBindDescriptorSets"] = (PFN_vkVoidFunction)vkCmdBindDescriptorSets;
 	
 	_dispatchTable["vkCreateSwapchainKHR"] = (PFN_vkVoidFunction)vkCreateSwapchainKHR;
 	_dispatchTable["vkDestroySwapchainKHR"] = (PFN_vkVoidFunction)vkDestroySwapchainKHR;

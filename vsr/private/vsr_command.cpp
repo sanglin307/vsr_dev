@@ -2,19 +2,19 @@
 #include "vsr_command.h"
 #include "vsr_image.h"
  
-void vkCommand_CopyImage::Excute()
+void vkCmd_CopyImage::Excute()
 {
-	for (size_t i = 0; i < _vecRegions.size(); i++)
+	for (size_t i = 0; i < vecRegions.size(); i++)
 	{
-		uint32_t layers = _vecRegions[i].srcSubresource.layerCount;
-		if(_srcImage->_type == VK_IMAGE_TYPE_3D && _dstImage->_type != VK_IMAGE_TYPE_3D)
-			layers = _vecRegions[i].dstSubresource.layerCount;
+		uint32_t layers = vecRegions[i].srcSubresource.layerCount;
+		if(srcImage->_type == VK_IMAGE_TYPE_3D && dstImage->_type != VK_IMAGE_TYPE_3D)
+			layers = vecRegions[i].dstSubresource.layerCount;
 
 		for (uint32_t i = 0; i < layers; i++)
 		{
-			void *pSrcData = _srcImage->GetMemory(_vecRegions[i].srcSubresource.baseArrayLayer + i, _vecRegions[i].srcSubresource.mipLevel, _vecRegions[i].srcOffset);
-			void *pDstData = _dstImage->GetMemory(_vecRegions[i].dstSubresource.baseArrayLayer + i, _vecRegions[i].dstSubresource.mipLevel, _vecRegions[i].dstOffset);
-			uint32_t size = _vecRegions[i].extent.width * _vecRegions[i].extent.height * _vecRegions[i].extent.depth * _srcImage->_elementsize;
+			void *pSrcData = srcImage->GetMemory(vecRegions[i].srcSubresource.baseArrayLayer + i, vecRegions[i].srcSubresource.mipLevel, vecRegions[i].srcOffset);
+			void *pDstData = dstImage->GetMemory(vecRegions[i].dstSubresource.baseArrayLayer + i, vecRegions[i].dstSubresource.mipLevel, vecRegions[i].dstOffset);
+			uint32_t size = vecRegions[i].extent.width * vecRegions[i].extent.height * vecRegions[i].extent.depth * srcImage->_elementsize;
 			std::memcpy(pDstData, pSrcData, size);
 		}
 		
@@ -140,15 +140,15 @@ VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage(
 	uint32_t                                    regionCount,
 	const VkImageCopy*                          pRegions)
 {
-	vkCommand_CopyImage *pCmd = new vkCommand_CopyImage;
-	pCmd->_srcImage = srcImage;
-	pCmd->_srcImageLayout = srcImageLayout;
-	pCmd->_dstImage = dstImage;
-	pCmd->_dstImageLayout = dstImageLayout;
+	vkCmd_CopyImage *pCmd = new vkCmd_CopyImage;
+	pCmd->srcImage = srcImage;
+	pCmd->srcImageLayout = srcImageLayout;
+	pCmd->dstImage = dstImage;
+	pCmd->dstImageLayout = dstImageLayout;
 	for (size_t i = 0; i < regionCount; i++)
 	{
 		VkImageCopy c = { pRegions[i].srcSubresource,pRegions[i].srcOffset,pRegions[i].dstSubresource,pRegions[i].dstOffset, pRegions[i].extent };
-		pCmd->_vecRegions.push_back(c);
+		pCmd->vecRegions.push_back(c);
 	}
 	commandBuffer->_listCommands.push_back(pCmd);
 }
@@ -157,7 +157,12 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBindPipeline(
 	VkCommandBuffer                             commandBuffer,
 	VkPipelineBindPoint                         pipelineBindPoint,
 	VkPipeline                                  pipeline)
-{}
+{
+	vkCmd_BindPipeline *pCmd = new vkCmd_BindPipeline;
+	pCmd->pipelineBindPoint = pipelineBindPoint;
+	pCmd->pipeline = pipeline;
+	commandBuffer->_listCommands.push_back(pCmd);
+}
 
 VKAPI_ATTR void VKAPI_CALL vkCmdSetViewport(
 	VkCommandBuffer                             commandBuffer,
@@ -194,7 +199,23 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBindDescriptorSets(
 	const VkDescriptorSet*                      pDescriptorSets,
 	uint32_t                                    dynamicOffsetCount,
 	const uint32_t*                             pDynamicOffsets)
-{}
+{
+	vkCmd_BindDescriptorSets *pCmd = new vkCmd_BindDescriptorSets;
+	pCmd->pipelineBindPoint = pipelineBindPoint;
+	pCmd->layout = layout;
+	pCmd->firstSet = firstSet;
+
+	for (uint32_t i = 0; i < descriptorSetCount; i++)
+	{
+		pCmd->vecDescriptorSets.push_back(pDescriptorSets[i]);
+	}
+
+	for (uint32_t i = 0; i < dynamicOffsetCount; i++)
+	{
+		pCmd->vecDynamicOffsets.push_back(pDynamicOffsets[i]);
+	}
+	commandBuffer->_listCommands.push_back(pCmd);
+ }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdSetBlendConstants(
 	VkCommandBuffer                             commandBuffer,
@@ -232,7 +253,18 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(
 	VkCommandBuffer                             commandBuffer,
 	const VkRenderPassBeginInfo*                pRenderPassBegin,
 	VkSubpassContents                           contents)
-{}
+{
+	vkCmd_BeginRenderPass *pCmd = new vkCmd_BeginRenderPass;
+	pCmd->contents = contents;
+	pCmd->framebuffer = pRenderPassBegin->framebuffer;
+	pCmd->renderArea = pRenderPassBegin->renderArea;
+	pCmd->renderPass = pRenderPassBegin->renderPass;
+	for (uint32_t i = 0; i < pRenderPassBegin->clearValueCount; i++)
+	{
+		pCmd->vecClearValues.push_back(pRenderPassBegin->pClearValues[i]);
+	}
+	commandBuffer->_listCommands.push_back(pCmd);
+}
 
 VKAPI_ATTR void VKAPI_CALL vkCmdNextSubpass(
 	VkCommandBuffer                             commandBuffer,

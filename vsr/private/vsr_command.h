@@ -1,20 +1,40 @@
 #pragma once
-
-enum vkCommandType {
-	CT_CopyImage = 0,
-};
-
+ 
 struct vkCommandInterface {
 	virtual void Excute() = 0;
 };
 
-struct vkCommand_CopyImage : public vkCommandInterface {
+struct vkCmd_CopyImage : public vkCommandInterface {
 	virtual void Excute();
-	VkImage                   _srcImage;
-	VkImageLayout             _srcImageLayout;
-	VkImage                   _dstImage;
-	VkImageLayout             _dstImageLayout;
-	std::vector<VkImageCopy>  _vecRegions;
+	VkImage                   srcImage;
+	VkImageLayout             srcImageLayout;
+	VkImage                   dstImage;
+	VkImageLayout             dstImageLayout;
+	std::vector<VkImageCopy>  vecRegions;
+};
+
+struct vkCmd_BindPipeline : public vkCommandInterface {
+	virtual void Excute();
+	VkPipelineBindPoint   pipelineBindPoint;
+    VkPipeline            pipeline;
+};
+
+struct vkCmd_BeginRenderPass : public vkCommandInterface {
+	virtual void Excute();
+	VkSubpassContents           contents;
+	VkRenderPass                renderPass;
+	VkFramebuffer               framebuffer;
+	VkRect2D                    renderArea;
+	std::vector<VkClearValue>   vecClearValues;
+};
+
+struct vkCmd_BindDescriptorSets : public vkCommandInterface {
+	virtual void Excute();
+	VkPipelineBindPoint             pipelineBindPoint;
+	VkPipelineLayout                layout;
+	uint32_t                        firstSet;
+    std::vector<VkDescriptorSet>    vecDescriptorSets;
+	std::vector<uint32_t>           vecDynamicOffsets;
 };
 
 enum vkCommandBufferState {
