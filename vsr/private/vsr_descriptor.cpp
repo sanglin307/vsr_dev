@@ -184,8 +184,8 @@ VkDescriptorSet_T::VkDescriptorSet_T(VkDescriptorPool pool, VkDescriptorSetLayou
 		obj._binding = layout->_vecBindings[i].binding;
 		obj._descriptorType = layout->_vecBindings[i].descriptorType;
 		obj._count = layout->_vecBindings[i].descriptorCount;
-		obj._pData = (vkDescriptorDataType*)std::malloc(obj._count * sizeof(vkDescriptorDataType));
-		std::memset(obj._pData, 0, sizeof(vkDescriptorDataType)*obj._count);
+		obj._pData = (vsrDescriptorDataType*)std::malloc(obj._count * sizeof(vsrDescriptorDataType));
+		std::memset(obj._pData, 0, sizeof(vsrDescriptorDataType)*obj._count);
 		if (obj._descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER || 
 			obj._descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 		{

@@ -13,7 +13,7 @@ struct VkPipelineCache_T : public MemoryAlloc<VkPipelineCache_T, VK_SYSTEM_ALLOC
 };
 
 #define VK_ShaderStageNameLength    64  
-struct vkShaderStage {
+struct vsrShaderStage {
 	VkShaderStageFlagBits               _stage;
 	std::vector<uint32_t>               _code;
 	char                                _name[VK_ShaderStageNameLength];
@@ -70,7 +70,7 @@ struct VkPipeline_T : public MemoryAlloc<VkPipeline_T, VK_SYSTEM_ALLOCATION_SCOP
 	std::vector<VkDynamicState>                     _vecDynamicStates;
 	std::vector<VkViewport>                         _vecViewports;
 	std::vector<VkRect2D>                           _vecScissors;
-	std::vector<vkShaderStage>                      _vecStages;
+	std::vector<vsrShaderStage>                     _vecStages;
 	std::vector<VkVertexInputBindingDescription>    _vecVertexBindingDescriptions;
 	std::vector<VkVertexInputAttributeDescription>  _vecVertexAttributeDescriptions;
 

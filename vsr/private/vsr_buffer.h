@@ -12,5 +12,5 @@ struct VkBuffer_T : public MemoryAlloc<VkBuffer_T, VK_SYSTEM_ALLOCATION_SCOPE_OB
 	VkBufferUsageFlags     _usage;
 	VkSharingMode          _sharingMode;
 	std::vector<uint32_t>  _vecQueueFamilyIndex;
-	void*                            _pData;
+	void*                  _pData;
 };

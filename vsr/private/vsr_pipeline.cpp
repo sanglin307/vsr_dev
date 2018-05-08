@@ -98,7 +98,7 @@ VkPipeline_T::VkPipeline_T(VkDevice device,const VkGraphicsPipelineCreateInfo* p
 	assert(pCreateInfos->stageCount > 0);
 	for (uint32_t i = 0; i < pCreateInfos->stageCount; i++)
 	{
-		vkShaderStage ss;
+		vsrShaderStage ss;
 		ss._stage = pCreateInfos->pStages[i].stage;
 		ss._code = pCreateInfos->pStages[i].module->_vecCodes;
 		assert(std::strlen(pCreateInfos->pStages[i].pName) < VK_ShaderStageNameLength);

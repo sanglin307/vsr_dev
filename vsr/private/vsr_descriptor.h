@@ -39,13 +39,13 @@ struct VkDescriptorPool_T : public MemoryAlloc<VkDescriptorPool_T, VK_SYSTEM_ALL
 	std::list<VkDescriptorSet>      _descriptors;
 };
 
-struct vkImageSamplerPack {
+struct vsrImageSamplerPack {
 	VkSampler  _sampler;
 	VkImageView _imageView;
 };
 
-union vkDescriptorDataType {
-	vkImageSamplerPack _imageSampler;
+union vsrDescriptorDataType {
+	vsrImageSamplerPack _imageSampler;
 	VkBufferView _bufferTexView;
 	void*  _buffer;
 };
@@ -62,7 +62,7 @@ struct vkDescriptorObject {
 
 	uint32_t               _binding;
 	VkDescriptorType       _descriptorType;
-	vkDescriptorDataType*  _pData;
+	vsrDescriptorDataType*  _pData;
 	uint32_t               _count;
 	
 };
