@@ -3,6 +3,8 @@
 #include <cassert>
 #include <cstdlib>
 #include <atomic>
+#include <chrono>
+#include <thread>
 #include <new>
 #include <vector>
 #include <list>

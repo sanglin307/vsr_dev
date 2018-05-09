@@ -2,10 +2,11 @@
 
 struct VkSwapchainKHR_T : public MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 
-	VkResult init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo);
+	VkResult Init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo);
 	~VkSwapchainKHR_T();
 
 	VkResult GetSwapchainImagesKHR(uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages);
+	VkResult AcquireNextImageKHR(uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t* pImageIndex);
 
 	std::vector<VkImage_T*>         _vecImages;
 #ifdef VK_USE_PLATFORM_WIN32_KHR

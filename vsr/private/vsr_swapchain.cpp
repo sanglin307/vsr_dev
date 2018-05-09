@@ -141,7 +141,12 @@ VkResult VkSwapchainKHR_T::GetSwapchainImagesKHR(uint32_t* pSwapchainImageCount,
 	return VK_SUCCESS;
 }
 
-VkResult VkSwapchainKHR_T::init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
+VkResult VkSwapchainKHR_T::AcquireNextImageKHR(uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t* pImageIndex)
+{
+	return VK_SUCCESS;
+}
+
+VkResult VkSwapchainKHR_T::Init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo)
 {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 	VkResult res = Init_Win32(device, pCreateInfo);
@@ -188,7 +193,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(
 	}
 
 	 
-	VkResult res = (*pSwapchain)->init(device, pCreateInfo);
+	VkResult res = (*pSwapchain)->Init(device, pCreateInfo);
 	if (res != VK_SUCCESS)
 	{
 		delete *pSwapchain;
@@ -223,7 +228,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(
 	VkFence                                     fence,
 	uint32_t*                                   pImageIndex)
 {
-	return VK_SUCCESS;
+	return swapchain->AcquireNextImageKHR(timeout, semaphore, fence, pImageIndex);
 }
 
 

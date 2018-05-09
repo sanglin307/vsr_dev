@@ -4,6 +4,7 @@ struct vsrCommandInterface {
 	virtual void Excute() = 0;
 };
 
+
 struct vsrCmd_Draw : public vsrCommandInterface {
 	virtual void Excute();
 	uint32_t                 _vertexCount;

@@ -38,11 +38,25 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyFence(
 	delete fence;
 }
 
+VKAPI_ATTR VkResult VKAPI_CALL vkGetFenceStatus(
+	VkDevice                                    device,
+	VkFence                                     fence)
+{
+	if (fence->IsSignal())
+		return VK_SUCCESS;
+	else
+		return VK_NOT_READY;
+}
+
 VKAPI_ATTR VkResult VKAPI_CALL vkResetFences(
 	VkDevice                                    device,
 	uint32_t                                    fenceCount,
 	const VkFence*                              pFences)
 {
+	for (uint32_t i = 0; i < fenceCount; i++)
+	{
+		pFences[i]->Signal(false);
+	}
 	return VK_SUCCESS;
 }
 
@@ -53,6 +67,33 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(
 	VkBool32                                    waitAll,
 	uint64_t                                    timeout)
 {
+	auto begin = std::chrono::high_resolution_clock::now();
+	while (true)
+	{
+		bool bAll = true;
+		for (uint32_t i = 0; i < fenceCount; i++)
+		{
+			if (!pFences[i]->IsSignal())
+				bAll = false;
+			else
+			{
+				if (!waitAll)
+					return VK_SUCCESS;
+			}
+		}
+
+		if (waitAll && bAll)
+			return VK_SUCCESS;
+		else
+		{
+			auto now = std::chrono::high_resolution_clock::now();
+			if (uint64_t((now - begin).count()) > timeout)
+				return VK_TIMEOUT;
+		}
+		std::this_thread::yield();
+		
+	}
+	
 	return VK_SUCCESS;
 }
 

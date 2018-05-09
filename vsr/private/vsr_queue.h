@@ -1,8 +1,16 @@
 #pragma once
 
 struct vsrQueueFamily {
-	VkQueueFamilyProperties _property;
-	VkBool32 _supportSurface;
+	VkQueueFamilyProperties  _property;
+	VkBool32                 _supportSurface;
+};
+
+struct vsrQueueSubmit {
+	std::vector<VkSemaphore>             _vecWaitSemaphores;
+	std::vector<VkPipelineStageFlags>    _vecWaitDstStageMask;
+	std::vector<VkCommandBuffer>         _vecCommandBuffers;
+	std::vector<VkSemaphore>             _vecSignalSemaphores;
+	VkFence                              _fence;
 };
 
 struct VkQueue_T : public MemoryAlloc<VkQueue_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
@@ -11,5 +19,6 @@ struct VkQueue_T : public MemoryAlloc<VkQueue_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 	{
 	}
 	uint32_t _queueFamilyIndex;
-	float _priority;
+	float    _priority;
+	std::list<vsrQueueSubmit*>  _listSubmit;
 };
