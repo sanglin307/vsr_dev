@@ -8,6 +8,7 @@
 #include "vsr_image.h"
 #include "vsr_surface.h"
 #include "vsr_swapchain.h"
+#include "vsr_sync.h"
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
@@ -143,6 +144,19 @@ VkResult VkSwapchainKHR_T::GetSwapchainImagesKHR(uint32_t* pSwapchainImageCount,
 
 VkResult VkSwapchainKHR_T::AcquireNextImageKHR(uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t* pImageIndex)
 {
+	//todo
+	*pImageIndex = _presenting + 1;
+	if (*pImageIndex >= _vecImages.size())
+	{
+		*pImageIndex = 0;
+	}
+
+	if (semaphore != nullptr)
+		semaphore->Signal(true);
+
+	if (fence != nullptr)
+		fence->Signal(true);
+
 	return VK_SUCCESS;
 }
 
@@ -160,6 +174,7 @@ VkResult VkSwapchainKHR_T::Init(VkDevice device, const VkSwapchainCreateInfoKHR*
 			pCreateInfo->imageArrayLayers, VK_IMAGE_TILING_OPTIMAL,pCreateInfo->imageUsage,pCreateInfo->imageSharingMode,pCreateInfo->queueFamilyIndexCount,
 			pCreateInfo->pQueueFamilyIndices, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 		_vecImages.push_back(image);
+		_presenting = -1;
 	}
 	return VK_SUCCESS;
 }
@@ -232,9 +247,3 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(
 }
 
 
-VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(
-	VkQueue                                     queue,
-	const VkPresentInfoKHR*                     pPresentInfo)
-{
-	return VK_SUCCESS;
-}

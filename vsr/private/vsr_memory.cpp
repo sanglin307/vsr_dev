@@ -65,7 +65,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(
 	VkMemoryMapFlags                            flags,
 	void**                                      ppData)
 {
-	*ppData = memory->GetAddress(offset, VK_WHOLE_SIZE);
+	*ppData = memory->GetAddress(offset, size);
 	if (*ppData == nullptr)
 		return VK_ERROR_MEMORY_MAP_FAILED;
 

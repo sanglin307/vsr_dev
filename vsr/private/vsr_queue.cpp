@@ -35,6 +35,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(
 	return VK_SUCCESS;
 }
 
+VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(
+	VkQueue                                     queue,
+	const VkPresentInfoKHR*                     pPresentInfo)
+{
+	return VK_SUCCESS;
+}
+
 VKAPI_ATTR VkResult VKAPI_CALL vkQueueWaitIdle(
 	VkQueue                                     queue)
 {
