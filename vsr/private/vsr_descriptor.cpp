@@ -1,6 +1,7 @@
 #include "vsr_common.h"
 #include "vsr_descriptor.h"
 #include "vsr_buffer.h"
+#include "vsr_device.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkSampler_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 
@@ -37,6 +38,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
+
+	device->Registe(*pSampler);
 	return VK_SUCCESS;
 }
 
@@ -45,6 +48,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySampler(
 	VkSampler                                   sampler,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(sampler);
 	delete sampler;
 }
 
@@ -76,6 +80,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	device->Registe(*pSetLayout);
 	return VK_SUCCESS;
 }
 
@@ -84,6 +89,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDescriptorSetLayout(
 	VkDescriptorSetLayout                       descriptorSetLayout,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(descriptorSetLayout);
 	delete descriptorSetLayout;
 }
 
@@ -102,9 +108,9 @@ VkDescriptorPool_T::VkDescriptorPool_T(const VkDescriptorPoolCreateInfo* pCreate
 
 VkDescriptorPool_T::~VkDescriptorPool_T()
 {
-	for (auto iter = _descriptors.begin(); iter != _descriptors.end(); ++iter)
+	for (auto v : _descriptors)
 	{
-		delete *iter;
+		delete v;
 	}
 	_descriptors.clear();
 }
@@ -122,11 +128,12 @@ VkResult VkDescriptorPool_T::AllocateDescriptorSets(VkDevice device, uint32_t co
 
 VkResult VkDescriptorPool_T::ResetDescriptorPool(VkDevice device)
 {
-	for (auto iter = _descriptors.begin(); iter != _descriptors.end(); ++iter)
+	for (auto v : _descriptors)
 	{
-		delete *iter;
+		delete v;
 	}
 	_descriptors.clear();
+
 	return VK_SUCCESS;
 }
 
@@ -155,6 +162,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorPool(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	device->Registe(*pDescriptorPool);
+
 	return VK_SUCCESS;
 }
 
@@ -163,6 +172,8 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDescriptorPool(
 	VkDescriptorPool                            descriptorPool,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(descriptorPool);
+
 	delete descriptorPool;
 }
 

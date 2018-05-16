@@ -1,7 +1,7 @@
 #pragma once
 
-struct VkFence_T : public MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
-	VkFence_T(VkDevice device, const VkFenceCreateInfo* pCreateInfo);
+struct VkFence_T : public vsrDeviceResource, public MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+	VkFence_T(const VkFenceCreateInfo* pCreateInfo);
 	inline void Signal(bool bSignal)
 	{
 		_state = bSignal;
@@ -12,12 +12,11 @@ struct VkFence_T : public MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 		return _state;
 	}
 
-	VkDevice_T*  _device;
 	std::atomic_bool _state;
 };
 
-struct VkSemaphore_T : public MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
-	VkSemaphore_T(VkDevice device, const VkSemaphoreCreateInfo* pCreateInfo);
+struct VkSemaphore_T : public vsrDeviceResource, public MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+	VkSemaphore_T(const VkSemaphoreCreateInfo* pCreateInfo);
 	inline void Signal(bool bSignal)
 	{
 		_state = bSignal;
@@ -27,6 +26,6 @@ struct VkSemaphore_T : public MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SC
 	{
 		return _state;
 	}
-	VkDevice_T*  _device;
+	
 	std::atomic_bool _state;
 };

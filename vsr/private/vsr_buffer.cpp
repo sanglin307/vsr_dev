@@ -50,6 +50,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	device->Registe(*pBuffer);
+
 	return VK_SUCCESS;
 }
 
@@ -58,5 +60,6 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyBuffer(
 	VkBuffer                                    buffer,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(buffer);
 	delete buffer;
 }

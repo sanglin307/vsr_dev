@@ -72,16 +72,22 @@ enum vsrCommandBufferState {
 
 struct VkCommandBuffer_T {
 	VkCommandBuffer_T(VkCommandBufferLevel level)
-		:_state(CBS_Init),_level(level)
+		:_state(CBS_Init), _level(level)
 	{}
+	~VkCommandBuffer_T()
+	{
+		for (auto v : _listCommands)
+			delete v;
+	}
 	vsrCommandBufferState _state;
 	VkCommandBufferLevel _level;
 	std::list<vsrCommandInterface*> _listCommands;
 };
 
-struct VkCommandPool_T :  public MemoryAlloc<VkCommandPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkCommandPool_T : public vsrDeviceResource, public MemoryAlloc<VkCommandPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkCommandPool_T(VkDevice device, const VkCommandPoolCreateInfo* pCreateInfo);
-	VkDevice_T *_device;
+	~VkCommandPool_T();
+
 	VkCommandPoolCreateFlags _flag;
 	uint32_t  _queueFamilyIndex;
 	std::vector<VkCommandBuffer_T*> _commandBuffers;

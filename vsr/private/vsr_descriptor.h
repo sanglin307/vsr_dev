@@ -1,6 +1,6 @@
 #pragma once
 
-struct VkSampler_T : public MemoryAlloc<VkSampler_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkSampler_T :public vsrDeviceResource, public MemoryAlloc<VkSampler_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkSampler_T(const VkSamplerCreateInfo* pCreateInfo);
 
 	VkFilter                _magFilter;
@@ -21,12 +21,12 @@ struct VkSampler_T : public MemoryAlloc<VkSampler_T, VK_SYSTEM_ALLOCATION_SCOPE_
 };
 
 
-struct VkDescriptorSetLayout_T : public MemoryAlloc<VkDescriptorSetLayout_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkDescriptorSetLayout_T : public vsrDeviceResource,public MemoryAlloc<VkDescriptorSetLayout_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkDescriptorSetLayout_T(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
 	std::vector<VkDescriptorSetLayoutBinding> _vecBindings;
 };
 
-struct VkDescriptorPool_T : public MemoryAlloc<VkDescriptorPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkDescriptorPool_T : public vsrDeviceResource,public MemoryAlloc<VkDescriptorPool_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkDescriptorPool_T(const VkDescriptorPoolCreateInfo* pCreateInfo);
 	~VkDescriptorPool_T();
 	VkResult AllocateDescriptorSets(VkDevice device, uint32_t count, VkDescriptorSetLayout layout,VkDescriptorSet* pDescriptorSets);
@@ -40,7 +40,7 @@ struct VkDescriptorPool_T : public MemoryAlloc<VkDescriptorPool_T, VK_SYSTEM_ALL
 };
 
 struct vsrImageSamplerPack {
-	VkSampler  _sampler;
+	VkSampler   _sampler;
 	VkImageView _imageView;
 };
 

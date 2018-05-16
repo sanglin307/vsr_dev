@@ -9,6 +9,7 @@
 #include "vsr_surface.h"
 #include "vsr_swapchain.h"
 #include "vsr_sync.h"
+#include "vsr_device.h"
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 
@@ -214,6 +215,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(
 		delete *pSwapchain;
 		return res;
 	}
+
+	device->Registe(*pSwapchain);
  
 	return VK_SUCCESS;
 }
@@ -223,6 +226,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(
 	VkSwapchainKHR                              swapchain,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(swapchain);
 	delete swapchain;
 }
 

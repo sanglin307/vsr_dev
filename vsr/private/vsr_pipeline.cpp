@@ -53,6 +53,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineCache(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	device->Registe(*pPipelineCache);
+
 	return VK_SUCCESS;
 }
 
@@ -61,6 +63,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineCache(
 	VkPipelineCache                             pipelineCache,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(pipelineCache);
 	delete pipelineCache;
 }
 
@@ -241,6 +244,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	for (uint32_t i = 0; i < createInfoCount; i++)
+	{
+		device->Registe(pPipelines[i]);
+	}
+
 	return VK_SUCCESS;
 }
 
@@ -260,6 +268,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipeline(
 	VkPipeline                                  pipeline,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(pipeline);
 	delete pipeline;
 }
 
@@ -277,7 +286,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
-
+	device->Registe(*pPipelineLayout);
 	return VK_SUCCESS;
 }
 
@@ -286,6 +295,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineLayout(
 	VkPipelineLayout                            pipelineLayout,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(pipelineLayout);
 	delete pipelineLayout;
 }
 

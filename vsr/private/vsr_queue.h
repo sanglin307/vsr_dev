@@ -5,12 +5,28 @@ struct vsrQueueFamily {
 	VkBool32                 _supportSurface;
 };
 
-struct vsrQueueSubmit {
+struct vsrQueueJob {
+	virtual void Run() = 0;
+};
+
+struct vsrQueueSubmit : public vsrQueueJob {
+	virtual void Run();
 	std::vector<VkSemaphore>             _vecWaitSemaphores;
 	std::vector<VkPipelineStageFlags>    _vecWaitDstStageMask;
 	std::vector<VkCommandBuffer>         _vecCommandBuffers;
 	std::vector<VkSemaphore>             _vecSignalSemaphores;
 	VkFence                              _fence;
+};
+
+struct vsrQueuePresentSwapchain {
+	VkSwapchainKHR   _swapChain;
+	uint32_t         _imageIndex;
+};
+
+struct vsrQueuePresent : public vsrQueueJob {
+	virtual void Run();
+	std::vector<VkSemaphore>                 _vecWaitSemaphores;
+	std::vector<vsrQueuePresentSwapchain>    _vecSwapchains;
 };
 
 
@@ -19,7 +35,14 @@ struct VkQueue_T : public MemoryAlloc<VkQueue_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 		:_queueFamilyIndex(familyIndex),_priority(priority)
 	{
 	}
+	~VkQueue_T();
+
 	uint32_t _queueFamilyIndex;
 	float    _priority;
-	std::list<vsrQueueSubmit*>  _listSubmit;
+
+	void Push(vsrQueueJob* job);
+	bool Empty();
+
+	std::mutex               _listMutex;
+	std::list<vsrQueueJob*>  _listJob;
 };

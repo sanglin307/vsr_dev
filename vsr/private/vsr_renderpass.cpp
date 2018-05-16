@@ -1,5 +1,6 @@
 #include "vsr_common.h"
 #include "vsr_renderpass.h"
+#include "vsr_device.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkRenderPass_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkRenderPass_T::VkRenderPass_T(const VkRenderPassCreateInfo* pCreateInfo)
@@ -37,6 +38,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	device->Registe(*pRenderPass);
 	return VK_SUCCESS;
 }
 
@@ -45,5 +47,6 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyRenderPass(
 	VkRenderPass                                renderPass,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(renderPass);
 	delete renderPass;
 }

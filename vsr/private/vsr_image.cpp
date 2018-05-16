@@ -289,6 +289,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
+	device->Registe(*pImage);
+
 	return VK_SUCCESS;
 }
 
@@ -297,6 +299,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyImage(
 	VkImage                                     image,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(image);
 	delete image;
 }
 
@@ -343,6 +346,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
+	device->Registe(*pView);
+
 	return VK_SUCCESS;
 }
 
@@ -351,5 +356,6 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyImageView(
 	VkImageView                                 imageView,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(imageView);
 	delete imageView;
 }

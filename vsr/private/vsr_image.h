@@ -1,6 +1,6 @@
 #pragma once
 
-struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkImage_T : public vsrDeviceResource, public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkImage_T(VkImageType type,VkFormat format,VkExtent3D extent,uint32_t mipLevels,uint32_t arrayLayers,VkImageTiling tiling,VkImageUsageFlags usage,VkSharingMode sharingMode,
 		      uint32_t queueFamilyIndexCount, const uint32_t* pQueueFamilyIndices, VkImageLayout layout);
 	VkImage_T(const VkImageCreateInfo *pCreateInfo);
@@ -42,7 +42,7 @@ struct VkImage_T : public MemoryAlloc<VkImage_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJE
 	void*                            _pData;
 };
 
-struct VkImageView_T : public MemoryAlloc<VkImageView_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkImageView_T : public vsrDeviceResource, public MemoryAlloc<VkImageView_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 	VkImageView_T(const VkImageViewCreateInfo* pCreateInfo);
 
 	static bool IsCompatible(VkFormat viewFormat, VkFormat imageFormat);

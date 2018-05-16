@@ -1,12 +1,12 @@
 #include "vsr_common.h"
 #include "vsr_sync.h"
+#include "vsr_device.h"
 
 
 VkAllocationCallbacks *MemoryAlloc<VkFence_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
-VkFence_T::VkFence_T(VkDevice device, const VkFenceCreateInfo* pCreateInfo)
+VkFence_T::VkFence_T(const VkFenceCreateInfo* pCreateInfo)
 {
 	_state = false;
-	_device = device;
 
 	if (pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT)
 		_state = true;
@@ -20,13 +20,15 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateFence(
 {
 	try
 	{
-		*pFence = new(pAllocator) VkFence_T(device,pCreateInfo);
+		*pFence = new(pAllocator) VkFence_T(pCreateInfo);
 	}
 	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
  
+	device->Registe(*pFence);
+
 	return VK_SUCCESS;
 }
 
@@ -35,6 +37,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyFence(
 	VkFence                                     fence,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(fence);
 	delete fence;
 }
 
@@ -101,8 +104,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 VkAllocationCallbacks *MemoryAlloc<VkSemaphore_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
-VkSemaphore_T::VkSemaphore_T(VkDevice device, const VkSemaphoreCreateInfo* pCreateInfo)
-	:_device(device),_state(false)
+VkSemaphore_T::VkSemaphore_T(const VkSemaphoreCreateInfo* pCreateInfo)
+	:_state(false)
 {
 }
 
@@ -114,12 +117,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSemaphore(
 {
 	try
 	{
-		*pSemaphore = new(pAllocator) VkSemaphore_T(device, pCreateInfo);
+		*pSemaphore = new(pAllocator) VkSemaphore_T(pCreateInfo);
 	}
 	catch (...)
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
+	device->Registe(*pSemaphore);
 
 	return VK_SUCCESS;
 }
@@ -129,6 +133,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySemaphore(
 	VkSemaphore                                 semaphore,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(semaphore);
 	delete semaphore;
 }
 

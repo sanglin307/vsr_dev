@@ -111,12 +111,11 @@ VkResult VkDevice_T::init(VkPhysicalDevice physicalDevice, const VkDeviceCreateI
 
 VkDevice_T::~VkDevice_T()
 {
-	for (int i = 0; i < _vecQueues.size(); i++)
-	{
-		delete _vecQueues[i];
-	}
-	_vecQueues.clear();
-	_dispatchTable.clear();
+	for (auto v : _listResource)
+		delete v;
+
+	for (auto v : _vecQueues)
+		delete v;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(

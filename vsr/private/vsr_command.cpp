@@ -1,6 +1,7 @@
 #include "vsr_common.h"
 #include "vsr_command.h"
 #include "vsr_image.h"
+#include "vsr_device.h"
  
 void vsrCmd_CopyImage::Excute()
 {
@@ -54,6 +55,12 @@ VkCommandPool_T::VkCommandPool_T(VkDevice device, const VkCommandPoolCreateInfo*
 	_queueFamilyIndex = pCreateInfo->queueFamilyIndex;
 }
 
+VkCommandPool_T::~VkCommandPool_T()
+{
+	for (auto v : _commandBuffers)
+		delete v;
+}
+
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateCommandPool(
 	VkDevice                                    device,
 	const VkCommandPoolCreateInfo*              pCreateInfo,
@@ -68,6 +75,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateCommandPool(
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
+
+	device->Registe(*pCommandPool);
  
 	return VK_SUCCESS;
 }
@@ -77,6 +86,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyCommandPool(
 	VkCommandPool                               commandPool,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(commandPool);
 	delete commandPool;
 }
 

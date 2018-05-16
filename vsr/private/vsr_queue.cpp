@@ -2,6 +2,27 @@
 #include "vsr_queue.h"
 #include "vsr_command.h"
 
+void VkQueue_T::Push(vsrQueueJob* job)
+{
+	std::lock_guard<std::mutex> lock(_listMutex);
+	_listJob.push_back(job);
+}
+
+bool VkQueue_T::Empty()
+{
+	std::lock_guard<std::mutex> lock(_listMutex);
+	return _listJob.empty();
+}
+
+VkQueue_T::~VkQueue_T()
+{
+	std::lock_guard<std::mutex> lock(_listMutex);
+	for (auto v : _listJob)
+	{
+		delete v;
+	}
+}
+
 VkAllocationCallbacks *MemoryAlloc<VkQueue_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(
 	VkQueue                                     queue,
@@ -29,7 +50,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(
 		else
 			pS->_fence = nullptr;
 		
-		queue->_listSubmit.push_back(pS);
+		queue->Push(pS);
 	}
 
 	return VK_SUCCESS;
@@ -39,11 +60,32 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(
 	VkQueue                                     queue,
 	const VkPresentInfoKHR*                     pPresentInfo)
 {
+	vsrQueuePresent *pJob = new vsrQueuePresent;
+	for (uint32_t i = 0; i < pPresentInfo->waitSemaphoreCount; i++)
+	{
+		pJob->_vecWaitSemaphores.push_back(pPresentInfo->pWaitSemaphores[i]);
+	}
+	for (uint32_t i = 0; i < pPresentInfo->swapchainCount; i++)
+	{
+		vsrQueuePresentSwapchain sc = {
+			pPresentInfo->pSwapchains[i],
+			pPresentInfo->pImageIndices[i]
+		};
+		pJob->_vecSwapchains.push_back(sc);
+		if (pPresentInfo->pResults != nullptr)
+			pPresentInfo->pResults[i] = VK_SUCCESS;
+	}
+
+	queue->Push(pJob);
+
 	return VK_SUCCESS;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkQueueWaitIdle(
 	VkQueue                                     queue)
 {
+	while (!queue->Empty())
+		std::this_thread::yield();
+
 	return VK_SUCCESS;
 }

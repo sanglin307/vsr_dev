@@ -2,6 +2,7 @@
 #include "vsr_memory.h"
 #include "vsr_image.h"
 #include "vsr_buffer.h"
+#include "vsr_device.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkDeviceMemory_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 
@@ -46,6 +47,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(
 		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
 	}
 
+	device->Registe(*pMemory);
+
 	return VK_SUCCESS;
 }
 
@@ -54,6 +57,7 @@ VKAPI_ATTR void VKAPI_CALL vkFreeMemory(
 	VkDeviceMemory                              memory,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(memory);
 	delete memory;
 }
 

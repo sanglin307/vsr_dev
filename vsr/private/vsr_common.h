@@ -5,6 +5,7 @@
 #include <atomic>
 #include <chrono>
 #include <thread>
+#include <mutex>
 #include <new>
 #include <vector>
 #include <list>
@@ -15,7 +16,10 @@
 
 #define Vk_Allocation_Alignment 64
 
- 
+struct vsrDeviceResource {
+	VkDevice     _device;
+};
+
 template<typename T, VkSystemAllocationScope scope>
 struct MemoryAlloc {
 	static VkAllocationCallbacks *_pAllocator;

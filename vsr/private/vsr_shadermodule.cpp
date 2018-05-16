@@ -1,5 +1,6 @@
 #include "vsr_common.h"
 #include "vsr_shadermodule.h"
+#include "vsr_device.h"
 
 VkAllocationCallbacks *MemoryAlloc<VkShaderModule_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT>::_pAllocator = nullptr;
 VkShaderModule_T::VkShaderModule_T(const VkShaderModuleCreateInfo* pCreateInfo)
@@ -23,6 +24,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateShaderModule(
 	{
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
+	device->Registe(*pShaderModule);
 	return VK_SUCCESS;
 }
 
@@ -31,5 +33,6 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyShaderModule(
 	VkShaderModule                              shaderModule,
 	const VkAllocationCallbacks*                pAllocator)
 {
+	device->UnRegiste(shaderModule);
 	delete shaderModule;
 }

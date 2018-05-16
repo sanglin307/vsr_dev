@@ -1,6 +1,6 @@
 #pragma once
 
-struct VkSurfaceKHR_T {
+struct VkSurfaceKHR_T  {
 	VkSurfaceKHR_T();
 	std::vector<VkSurfaceFormatKHR> _format;
 	VkSurfaceCapabilitiesKHR _capability = {

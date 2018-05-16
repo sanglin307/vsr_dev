@@ -1,6 +1,6 @@
 #pragma once
 
-struct VkSwapchainKHR_T : public MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
+struct VkSwapchainKHR_T : public vsrDeviceResource, public MemoryAlloc<VkSwapchainKHR_T, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT> {
 
 	VkResult Init(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo);
 	~VkSwapchainKHR_T();
